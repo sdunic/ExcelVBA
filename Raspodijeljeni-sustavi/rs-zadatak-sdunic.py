@@ -114,10 +114,10 @@ def main():
     #odabir i ispis cvora
     while(True):
         x = input("Odaberite redak koordinatu cvora : ")
-        if (x > -1 and x < 5) : break
+        if (x > -1 and x < n) : break
     while(True):
         y = input("Odaberite stupac koordinatu cvora : ")
-        if (y > -1 and y < 5) : break
+        if (y > -1 and y < n) : break
     selected_node = _network.network[x][y]
     print "Odabran cvor : "
     print print_node(selected_node)
