@@ -15,6 +15,8 @@ class Node :
 
 class Network:
     def init(self, n, m):
+        #spremljene dimenzije mreze
+        self.n = n
         self.network = []
         for i in range(n):
             col = []
@@ -37,13 +39,13 @@ class Network:
             #print_node(n1)
             neighbour.append(n1)
         
-        if((y + 1) < 5) :
+        if((y + 1) < self.n) :
             n2 = self.network[x][(y + 1)]
             #print "Desni susjed : "
             #print_node(n2)
             neighbour.append(n2)
         
-        if((x + 1) < 5) :
+        if((x + 1) < self.n) :
             n3 = self.network[(x + 1)][y]
             #print "Donji susjed : "
             #print_node(n3)
@@ -91,6 +93,7 @@ def replace_knowledge(node, neighbour):
 
 def recursion_knowledge(node, network):
     if(check_knowledge(node)) : return
+    #treba dodati provjeru ako nema jedinica da napune da izbaci. znaci nekako naci kraj tih rekurzija.
     neighbour = network.neighbours(node.x,node.y)
     replace_knowledge(node, neighbour)
 
@@ -98,13 +101,11 @@ def recursion_knowledge(node, network):
         recursion_knowledge(neighbour_node, network)
                  
     
-
-
 def main():
     #network n x n
-    n = 15
+    n = 2
     #node m x m
-    m = 15
+    m = 6
     #stvaranje, inicijaliziranje i printanje mreze
     _network = Network()
     _network.init(n, m) 
