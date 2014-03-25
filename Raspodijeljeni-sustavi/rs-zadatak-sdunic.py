@@ -1,11 +1,11 @@
 from random import *
 
 class Node :
-    def init(self, m):
+    def __init__(self, x, y, m):
         #provjera jeli provjeren
         #self.checked = 0
-        self.x = 0
-        self.y = 0
+        self.x = x
+        self.y = y
         self.matrix = []
         for i in range(m):
             col = []
@@ -14,17 +14,14 @@ class Node :
             self.matrix.append(col)
 
 class Network:
-    def init(self, n, m):
+    def __init__(self, n, m):
         #spremljene dimenzije mreze
         self.n = n
         self.network = []
         for i in range(n):
             col = []
             for j in range(n):
-                node = Node()
-                node.init(m)
-                node.x = i
-                node.y = j
+                node = Node(i, j, m)
                 col.append(node)
             self.network.append(col)
 
@@ -70,8 +67,8 @@ def print_network(temp):
         for k in range(len(temp.network[i][0].matrix[0])):
             for j in range(len(temp.network[i])):             
                 print str(temp.network[i][j].matrix[k])+"\t",
-        print
-        print
+            print '\n'
+        print '\n'
     
 def check_knowledge(node):
     for i in range(len(node.matrix[0])):
@@ -107,8 +104,7 @@ def main():
     #node m x m
     m = 6
     #stvaranje, inicijaliziranje i printanje mreze
-    _network = Network()
-    _network.init(n, m) 
+    _network = Network(n,m)
     print print_network(_network)
 
     #odabir i ispis cvora
@@ -127,6 +123,6 @@ def main():
     print "Nakon promjene : "
     print_node(selected_node)
 
-
-main()
+if __name__=='__main__':
+    main()
             
