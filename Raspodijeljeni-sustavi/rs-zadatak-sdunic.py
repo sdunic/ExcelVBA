@@ -3,7 +3,7 @@ from random import *
 class Node :
     def init(self, m):
         #provjera jeli provjeren
-        #self.checked = 0
+        #self.checked =  0
         self.x = 0
         self.y = 0
         self.matrix = []
