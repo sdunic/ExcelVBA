@@ -19,7 +19,10 @@ namespace _2dGameLanguage
         int offsetFieldFigure = 29;
         int boardOffsetX = 350, boardOffsetY = 760;
         int tempLineOffset = 5;
-
+        int moves = 0;
+        int numOfPlayers = 0;
+        string[] players = {"Crveni", "Žuti", "Zeleni", "Plavi"};
+        int activePlayer = 0; //vezano za listu igrača koji se prikazuju, 0 - Crveni ... 3 - Plavi
    	
     	
         //Instance Variables
@@ -56,6 +59,9 @@ namespace _2dGameLanguage
             public Bitmap bmp;
             public int x, y, width, height;
             public bool show;
+            public bool moves;
+            public int pathPosition;
+            public int pathOffset;
 
             public Sprite(string images, int p1, int p2)
             {
@@ -66,6 +72,9 @@ namespace _2dGameLanguage
                 width = bmp.Width;
                 height = bmp.Height;
                 show = true;
+                moves = false;
+                pathPosition = -1;
+                pathOffset = -1;
             }
 
             public Sprite(string images, int p1, int p2, int w, int h)
@@ -77,6 +86,9 @@ namespace _2dGameLanguage
                 width = w;
                 height = h;
                 show = true;
+                moves = false;
+                pathPosition = -1;
+                pathOffset = -1;
             }
         }
 
@@ -99,6 +111,10 @@ namespace _2dGameLanguage
 
         public void Init()
         {
+            while (numOfPlayers < 1 || numOfPlayers > 4)
+            {
+                numOfPlayers = ShowDialog("Broj igrača (1-4):", "Pitanje");
+            }
             if (dt == null) time = dt.TimeOfDay.ToString();
             loopcount++;
 
@@ -107,14 +123,12 @@ namespace _2dGameLanguage
 
                   
             setTitle("Čovječe ne ljuti se!!!"); // postavi naziv prozora
-            
+            setStatus("Baci kocku!");
+            setBackgroundColour(209, 182, 137);
             loadSound(1, "roll-dice.wav"); // učitaj zvukove isto kao i sprite-ove
 
-
-
             SetBoard();
-            SetHomes();
-
+            SetHomes(numOfPlayers);
             loadSprite("direction.png", 91, spriteX(0), spriteY(0) - tempLineOffset);
             loadSprite("direction.png", 92, spriteX(20) + tempLineOffset, spriteY(20));
             rotateSprite(92, 90);
@@ -122,7 +136,7 @@ namespace _2dGameLanguage
             rotateSprite(93, 180);
             loadSprite("direction.png", 94, spriteX(60) - tempLineOffset, spriteY(60));
             rotateSprite(94, 270);
-
+            setPlayer(activePlayer);
             
         }
 
@@ -130,8 +144,6 @@ namespace _2dGameLanguage
 
             int tempOffsetX = 0;
             int tempOffsetY = 0;
-            
-            setBackgroundImage("background.png"); // postavi zadanu bitmapu u pozadinu
             
             //60px ima svaki field - učitaj sprite sa identifikatorom na određenu koordinatu
 
@@ -166,13 +178,18 @@ namespace _2dGameLanguage
             SetDice(6);
         }
 
-        public int RollDice()
+        public int RollDice(int x)
         {
-            playSound(1);
-            Random rnd = new Random();
-            int x = rnd.Next(1, 7);
-            System.Threading.Thread.Sleep(2000);
-            SetDice(x);
+            if (s.ElapsedMilliseconds > 2000)
+            {
+                s.Stop();
+            }
+            else if (s.ElapsedMilliseconds % 500 == 0)
+            {
+                Random rnd = new Random();
+                x = rnd.Next(1, 7);
+                SetDice(x);
+            }
             return x;
         }
 
@@ -410,8 +427,9 @@ namespace _2dGameLanguage
             }
         }
 
-        public void SetHomes()
+        public void SetHomes(int numOfPlayers)
         {
+            
             loadRedHomeSprite("RedField.png", 2, spriteX(14), spriteY(0));
             loadRedHomeSprite("RedField.png", 3, spriteX(16), spriteY(0));
             loadRedHomeSprite("RedField.png", 0, spriteX(14), spriteY(2));
@@ -420,10 +438,13 @@ namespace _2dGameLanguage
             loadRedHomeSprite("RedField.png", 5, spriteX(78), spriteY(4));
             loadRedHomeSprite("RedField.png", 6, spriteX(78), spriteY(6));
             loadRedHomeSprite("RedField.png", 7, spriteX(78), spriteY(8));
-            loadRedFigureSprite("RedFigure.png", 2, spriteX(14), spriteY(0));
-            loadRedFigureSprite("RedFigure.png", 3, spriteX(16), spriteY(0));
-            loadRedFigureSprite("RedFigure.png", 0, spriteX(14), spriteY(2));
-            loadRedFigureSprite("RedFigure.png", 1, spriteX(16), spriteY(2));
+            if (numOfPlayers > 0 && numOfPlayers < 5)
+            {
+                loadRedFigureSprite("RedFigure.png", 2, spriteX(14), spriteY(0));
+                loadRedFigureSprite("RedFigure.png", 3, spriteX(16), spriteY(0));
+                loadRedFigureSprite("RedFigure.png", 0, spriteX(14), spriteY(2));
+                loadRedFigureSprite("RedFigure.png", 1, spriteX(16), spriteY(2));
+            }
 
             loadYellowHomeSprite("YellowField.png", 1, spriteX(20), spriteY(34));
             loadYellowHomeSprite("YellowField.png", 0, spriteX(22), spriteY(34));
@@ -433,10 +454,13 @@ namespace _2dGameLanguage
             loadYellowHomeSprite("YellowField.png", 5, spriteX(12), spriteY(18));
             loadYellowHomeSprite("YellowField.png", 6, spriteX(10), spriteY(18));
             loadYellowHomeSprite("YellowField.png", 7, spriteX(8), spriteY(18));
-            loadYellowFigureSprite("YellowFigure.png", 1, spriteX(20), spriteY(34));
-            loadYellowFigureSprite("YellowFigure.png", 0, spriteX(22), spriteY(34));
-            loadYellowFigureSprite("YellowFigure.png", 3, spriteX(20), spriteY(36));
-            loadYellowFigureSprite("YellowFigure.png", 2, spriteX(22), spriteY(36));
+            if (numOfPlayers > 1 && numOfPlayers < 5)
+            {
+                loadYellowFigureSprite("YellowFigure.png", 1, spriteX(20), spriteY(34));
+                loadYellowFigureSprite("YellowFigure.png", 0, spriteX(22), spriteY(34));
+                loadYellowFigureSprite("YellowFigure.png", 3, spriteX(20), spriteY(36));
+                loadYellowFigureSprite("YellowFigure.png", 2, spriteX(22), spriteY(36));
+            }
 
             loadGreenHomeSprite("GreenField.png", 0, spriteX(54), spriteY(34));
             loadGreenHomeSprite("GreenField.png", 1, spriteX(56), spriteY(34));
@@ -446,10 +470,13 @@ namespace _2dGameLanguage
             loadGreenHomeSprite("GreenField.png", 5, spriteX(78), spriteY(32));
             loadGreenHomeSprite("GreenField.png", 6, spriteX(78), spriteY(30));
             loadGreenHomeSprite("GreenField.png", 7, spriteX(78), spriteY(28));
-            loadGreenFigureSprite("GreenFigure.png", 0, spriteX(54), spriteY(34));
-            loadGreenFigureSprite("GreenFigure.png", 1, spriteX(56), spriteY(34));
-            loadGreenFigureSprite("GreenFigure.png", 2, spriteX(54), spriteY(36));
-            loadGreenFigureSprite("GreenFigure.png", 3, spriteX(56), spriteY(36));
+            if (numOfPlayers > 2 && numOfPlayers < 5)
+            {
+                loadGreenFigureSprite("GreenFigure.png", 0, spriteX(54), spriteY(34));
+                loadGreenFigureSprite("GreenFigure.png", 1, spriteX(56), spriteY(34));
+                loadGreenFigureSprite("GreenFigure.png", 2, spriteX(54), spriteY(36));
+                loadGreenFigureSprite("GreenFigure.png", 3, spriteX(56), spriteY(36));
+            }
 
             loadBlueHomeSprite("BlueField.png", 2, spriteX(54), spriteY(0));
             loadBlueHomeSprite("BlueField.png", 3, spriteX(56), spriteY(0));
@@ -459,24 +486,60 @@ namespace _2dGameLanguage
             loadBlueHomeSprite("BlueField.png", 5, spriteX(52), spriteY(18));
             loadBlueHomeSprite("BlueField.png", 6, spriteX(50), spriteY(18));
             loadBlueHomeSprite("BlueField.png", 7, spriteX(48), spriteY(18));
-            loadBlueFigureSprite("BlueFigure.png", 2, spriteX(54), spriteY(0));
-            loadBlueFigureSprite("BlueFigure.png", 3, spriteX(56), spriteY(0));
-            loadBlueFigureSprite("BlueFigure.png", 0, spriteX(54), spriteY(2));
-            loadBlueFigureSprite("BlueFigure.png", 1, spriteX(56), spriteY(2));
+            if (numOfPlayers == 4)
+            {
+                loadBlueFigureSprite("BlueFigure.png", 2, spriteX(54), spriteY(0));
+                loadBlueFigureSprite("BlueFigure.png", 3, spriteX(56), spriteY(0));
+                loadBlueFigureSprite("BlueFigure.png", 0, spriteX(54), spriteY(2));
+                loadBlueFigureSprite("BlueFigure.png", 1, spriteX(56), spriteY(2));
+            }
 
         }
 
+        private Stopwatch s = new Stopwatch();
+
+      
         private void Update(object sender, EventArgs e)
         {        	
-        	// ponašanje figura 
+            // ponašanje figura 
             //startna pozicija sprite[0] crveni, sprite[10] zuti, sprite [20] zeleni, sprite [30] plavi
-            int moves = 0;
-           
-            if (isKeyPressed(Keys.Enter) && !figureMoves)
+            
+            if (isKeyDown(Keys.Enter) && !figureMoves)
             {
-                moves = RollDice();
+                s = new Stopwatch();
+                s.Start();
+                playSound(1);
+                setStatus("Čekaj red!");
             }
-          
+            if (s.IsRunning)
+            {
+                moves = RollDice(moves);
+            }
+            else if(moves > 0)
+            {
+                if (activePlayer == 0)
+                {
+                    moveFigureToSprite(redFigures, 0, moves);
+                }
+                else if (activePlayer == 1)
+                {
+                    moveFigureToSprite(yellowFigures, 0, moves);
+                }
+                else if (activePlayer == 2)
+                {
+                    moveFigureToSprite(greenFigures, 0, moves);
+                }
+                else if (activePlayer == 3)
+                {
+                    moveFigureToSprite(blueFigures, 0, moves);
+                }
+                moves = 0;
+                setStatus("Baci kocku!");
+                
+                activePlayer = (activePlayer + 1) % numOfPlayers;
+                setPlayer(activePlayer);
+            }
+
               	
             this.Refresh();
         }
@@ -524,6 +587,18 @@ namespace _2dGameLanguage
             this.Text = title;
         }
 
+        public void setStatus(string status)
+        {
+            lblStatus.Text = status;
+        }
+
+        public void setPlayer(int pl)
+        {
+            lblPlayerInfo.Text = "Igrač - " + players[pl];
+        }
+
+
+
         public void setBackgroundColour(int r, int g, int b)
         {
         
@@ -568,18 +643,22 @@ namespace _2dGameLanguage
         public void loadRedFigureSprite(string file, int spriteNum, int x, int y)
         {
             redFigures[spriteNum] = new Sprite(file, x, y);
+            redFigures[spriteNum].pathOffset = 0;
         }
         public void loadYellowFigureSprite(string file, int spriteNum, int x, int y)
         {
             yellowFigures[spriteNum] = new Sprite(file, x, y);
+            yellowFigures[spriteNum].pathOffset = 20;
         }
         public void loadGreenFigureSprite(string file, int spriteNum, int x, int y)
         {
             greenFigures[spriteNum] = new Sprite(file, x, y);
+            greenFigures[spriteNum].pathOffset = 40;
         }
         public void loadBlueFigureSprite(string file, int spriteNum, int x, int y)
         {
             blueFigures[spriteNum] = new Sprite(file, x, y);
+            blueFigures[spriteNum].pathOffset = 60;
         }
         public void loadRedHomeSprite(string file, int spriteNum, int x, int y)
         {
@@ -634,6 +713,35 @@ namespace _2dGameLanguage
         {
             tempSprites[spriteNum].x = x;
             tempSprites[spriteNum].y = y;
+        }
+
+        public void moveFigureToSprite(Sprite[] figures, int numOfFigure, int numOfMoves)
+        {
+
+            //ako se pomiče iz kućice postaviti na offset
+            if (!figures[numOfFigure].moves && numOfMoves == 6)
+            {
+                figures[numOfFigure].x = sprites[figures[numOfFigure].pathOffset].x;
+                figures[numOfFigure].y = sprites[figures[numOfFigure].pathOffset].y;
+                figures[numOfFigure].moves = true;
+                figures[numOfFigure].pathPosition = figures[numOfFigure].pathOffset;
+            }
+            else if(figures[numOfFigure].moves)
+            {
+                int newPosition = figures[numOfFigure].pathPosition + numOfMoves * 2;
+
+                if (newPosition - figures[numOfFigure].pathOffset > 80)
+                {
+                    //ulazi u kućicu
+                }
+                else
+                {
+                    figures[numOfFigure].x = sprites[newPosition % 80].x;
+                    figures[numOfFigure].y = sprites[newPosition % 80].y;
+                    figures[numOfFigure].pathPosition = newPosition % 80;
+                }
+                
+            }
         }
 
         public void setImageColorKey(int spriteNum, int r, int g, int b)
@@ -803,6 +911,19 @@ namespace _2dGameLanguage
             }
         }
 
+        public bool isKeyDown(Keys key)
+        {
+            if (inkey == key.ToString())
+            {
+                inkey = "";
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public bool spriteCollision(int spriteNum1, int spriteNum2)
         {
             Rectangle sp1 = new Rectangle(sprites[spriteNum1].x, sprites[spriteNum1].y, sprites[spriteNum1].width, sprites[spriteNum1].height);
@@ -936,5 +1057,29 @@ namespace _2dGameLanguage
 
 #endregion
 
+
+        public static int ShowDialog(string text, string caption)
+        {
+            Form prompt = new Form()
+            {
+                Width = 200,
+                Height = 150,
+                FormBorderStyle = FormBorderStyle.FixedToolWindow,
+                Text = caption,
+                StartPosition = FormStartPosition.CenterScreen
+
+            };
+            Label textLabel = new Label() { Left = 20, Top = 23, Text = text };
+            TextBox textBox = new TextBox() { Left = 105, Top = 20, Width = 55, TextAlign = HorizontalAlignment.Center };
+            textBox.Text = "2";
+            Button confirmation = new Button() { Text = "Potvrdi", Left = 20, Width = 140, Top = 70, DialogResult = DialogResult.OK };
+            confirmation.Click += (sender, e) => { prompt.Close(); };
+            prompt.Controls.Add(textBox);
+            prompt.Controls.Add(confirmation);
+            prompt.Controls.Add(textLabel);
+            prompt.AcceptButton = confirmation;
+
+            return prompt.ShowDialog() == DialogResult.OK ? Convert.ToInt16(textBox.Text) : 0;
+        }
     }
 }

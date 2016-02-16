@@ -50,3 +50,11 @@ C:\Users\Stefan\Desktop\Game SDK\obj\x86\Debug\2dGameLanguage.csproj.GenerateRes
 C:\Users\Stefan\Desktop\Game SDK\obj\x86\Debug\2dGameLanguage.exe
 C:\Users\Stefan\Desktop\Game SDK\obj\x86\Debug\2dGameLanguage.pdb
 C:\Users\Stefan\Desktop\Game SDK\obj\x86\Debug\2dGameLanguage.csprojResolveAssemblyReference.cache
+D:\Work\GitHub\Repeticije\Game SDK - Covjece ne ljuti se\obj\x86\Debug\2dGameLanguage.exe
+D:\Work\GitHub\Repeticije\Game SDK - Covjece ne ljuti se\obj\x86\Debug\2dGameLanguage.pdb
+D:\Work\GitHub\Repeticije\Game SDK - Covjece ne ljuti se\bin\Debug\2dGameLanguage.exe
+D:\Work\GitHub\Repeticije\Game SDK - Covjece ne ljuti se\bin\Debug\2dGameLanguage.pdb
+D:\Work\GitHub\Repeticije\Game SDK - Covjece ne ljuti se\obj\x86\Debug\2dGameLanguage.csprojResolveAssemblyReference.cache
+D:\Work\GitHub\Repeticije\Game SDK - Covjece ne ljuti se\obj\x86\Debug\_2dGameLanguage.Properties.Resources.resources
+D:\Work\GitHub\Repeticije\Game SDK - Covjece ne ljuti se\obj\x86\Debug\2dGameLanguage.csproj.GenerateResource.Cache
+D:\Work\GitHub\Repeticije\Game SDK - Covjece ne ljuti se\obj\x86\Debug\_2dGameLanguage.BGL.resources

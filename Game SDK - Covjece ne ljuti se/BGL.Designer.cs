@@ -64,21 +64,21 @@
             // lblPlayerInfo
             // 
             this.lblPlayerInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(209)))), ((int)(((byte)(182)))), ((int)(((byte)(137)))));
-            this.lblPlayerInfo.Location = new System.Drawing.Point(832, 32);
+            this.lblPlayerInfo.Location = new System.Drawing.Point(818, 32);
             this.lblPlayerInfo.Name = "lblPlayerInfo";
-            this.lblPlayerInfo.Size = new System.Drawing.Size(220, 50);
+            this.lblPlayerInfo.Size = new System.Drawing.Size(230, 50);
             this.lblPlayerInfo.TabIndex = 1;
-            this.lblPlayerInfo.Text = "Igra - Igrač 1";
+            this.lblPlayerInfo.Text = "Player";
             this.lblPlayerInfo.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // lblStatus
             // 
             this.lblStatus.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(209)))), ((int)(((byte)(182)))), ((int)(((byte)(137)))));
-            this.lblStatus.Location = new System.Drawing.Point(832, 82);
+            this.lblStatus.Location = new System.Drawing.Point(818, 82);
             this.lblStatus.Name = "lblStatus";
-            this.lblStatus.Size = new System.Drawing.Size(220, 50);
+            this.lblStatus.Size = new System.Drawing.Size(230, 50);
             this.lblStatus.TabIndex = 2;
-            this.lblStatus.Text = "Baci kocku!";
+            this.lblStatus.Text = "Status";
             this.lblStatus.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // BGL

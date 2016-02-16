@@ -93,6 +93,7 @@
     <Content Include="Slike\GreenField.png" />
     <Content Include="Slike\GreenFigure.png" />
     <Content Include="Slike\h_line.png" />
+    <Content Include="Slike\icon.ico" />
     <Content Include="Slike\RedField.png" />
     <Content Include="Slike\RedFigure.png" />
     <Content Include="Slike\v_line.png" />
