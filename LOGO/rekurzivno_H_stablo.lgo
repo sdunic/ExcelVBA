@@ -1,0 +1,23 @@
+to crtajH :dubina :a :b
+	
+	IF :dubina = 0 [STOP]
+	
+	lt 90 fd :a rt 90 fd :b
+	crtajH :dubina - 1 :a/2 :b/2
+	
+	bk :b lt 90 bk :a rt 90
+	rt 90 fd :a lt 90 fd :b
+	crtajH :dubina - 1 :a/2 :b/2
+
+	bk :b rt 90 bk :a lt 90
+	lt 90 fd :a lt 90 fd :b
+	crtajH :dubina - 1 :a/2 :b/2
+	
+
+	bk :b rt 90 bk :a rt 90
+	rt 90 fd :a rt 90 fd :b
+	crtajH :dubina - 1 :a/2 :b/2
+	bk :b lt 90 bk :a lt 90
+
+end
+
