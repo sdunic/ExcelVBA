@@ -1,6 +1,7 @@
-Repeticije
+Coding
 ================
 
-Razni zadatci riješeni u sklopu repeticija srednje škole i fakulteta.
+Various tasks and algorithms solved. 
 
-Programski jezici: C, C#, Python, LOGO
+Python 3.x
+LOGO

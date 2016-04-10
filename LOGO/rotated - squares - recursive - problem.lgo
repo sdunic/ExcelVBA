@@ -1,10 +1,10 @@
-to kvadrati :dubina :a
+to squares :depth :a
 
-	if :dubina = 0 [STOP]
+	if :depth = 0 [STOP]
 
 	lt 135 pu fd :a/2 pd rt 90 fd :a/2 rt 90 fd :a rt 90 fd :a rt 90 fd :a rt 90 fd :a/2 lt 90 pu bk :a/2 pd
 
-	kvadrati (:dubina  - 1) (((SQRT 2) * :a) / 2)
+	squares (:depth  - 1) (((SQRT 2) * :a) / 2)
 
 	ht
 end
