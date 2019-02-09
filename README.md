@@ -1,7 +1,7 @@
-Coding
+Repeticije
 ================
 
-Various problems and algorithms solved. 
+Razni problemi i zadatci riješeni 
 
 
 Python 3.x
