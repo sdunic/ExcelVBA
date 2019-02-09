@@ -1,8 +1,8 @@
 Repeticije
 ================
 
-Razni problemi i zadatci riješeni 
+Razni problemi i zadaci
 
 
-Python 3.x
-LOGO
+- Python 3.x
+- LOGO
