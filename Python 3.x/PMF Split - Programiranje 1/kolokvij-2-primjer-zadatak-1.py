@@ -35,11 +35,18 @@ for i in range(n):
     if ProvjeraIspravnosti(niz[i]) == False:
         broj_pogresnih +=1
 
+    #if niz[i] > 999 and niz[i] < 100:
+        #broj_pogresnih +=1
+
 print("Broj pogrešno upisanih:", broj_pogresnih)
 print("Rješenje:")
 
 for i in range(n):
     y = ProduktZnamenki(niz[i])
+    
+    #if (y-1)%5==0:
+        #print(niz[i], "- produkt znamenki", y)
+        
     if ProvjeraIspisa(y):
         print(niz[i], "- produkt znamenki", y)
             
