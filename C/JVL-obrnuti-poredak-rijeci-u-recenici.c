@@ -1,5 +1,5 @@
 /*
-Ispis zadanog stringa s obrnutim poretkom rijeèi.
+Ispis zadane recenice s obrnutim poretkom rijeci.
 */
 #include <stdio.h>
 #include <string.h>
