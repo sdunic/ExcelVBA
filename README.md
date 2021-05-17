@@ -1,4 +1,4 @@
-Repeticije
+Razni problemi
 ================
 
 Razni problemi i zadaci
