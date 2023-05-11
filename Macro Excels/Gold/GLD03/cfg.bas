@@ -6,18 +6,18 @@ Attribute VB_Name = "cfg"
 Dim colSifraArtikla, colBarkodArtikla, colNazivArtikla, colBrand, colPrincipal As String
 Dim colNivo1, colNaziv1, colNivo2, colNaziv2, colNivo3, colNaziv3, colNivo4, colNaziv4, colNivo5, colNaziv5 As String
 Dim colAsortiman, colTSC, colOpis, colSvojstva As String
-Dim colTNC_ADatum, colTNC_ACijena, colTNC_ANovaCijena, colTNC_AIndeks, colTNC_BDatum, colTNC_BCijena, colTNC_BNovaCijena, colTNC_BIndeks, colTNC_CDatum, colTNC_CCijena, colTNC_CNovaCijena, colTNC_CIndeks, colTNC_DDatum, colTNC_DCijena, colTNC_DNovaCijena, colTNC_DIndeks, colTNC_SDatum, colTNC_SCijena, colTNC_SNovaCijena, colTNC_SIndeks As String
+Dim colTNC_ADatum, colTNC_ACijena, colTNC_ANovaCijena, colTNC_AIndeks, colTNC_BDatum, colTNC_BCijena, colTNC_BNovaCijena, colTNC_BIndeks, colTNC_CDatum, colTNC_CCijena, colTNC_CNovaCijena, colTNC_CIndeks, colTNC_DDatum, colTNC_DCijena, colTNC_DNovaCijena, colTNC_DIndeks, colTNC_SDatum, colTNC_SCijena, colTNC_SNovaCijena, colTNC_SIndeks, colTNC_KAMPDatum, colTNC_KAMPCijena, colTNC_KAMPNovaCijena, colTNC_KAMPIndeks As String
 Dim colTNC_Datum, colTNC_Cijena, colTNC_NovaCijena, colTNC_Indeks As String
 Dim colRedak, colPoreznaGrupa, colCEXV, colBrojPromjena As String
 
 Dim rsSifraArtikla, rsBarkodArtikla, rsNazivArtikla, rsBrand, rsPrincipal As Integer
 Dim rsNivo1, rsNaziv1, rsNivo2, rsNaziv2, rsNivo3, rsNaziv3, rsNivo4, rsNaziv4, rsNivo5, rsNaziv5 As Integer
 Dim rsAsortiman, rsTSC, rsOpis, rsSvojstva As Integer
-Dim rsTNC_ANtar, rsTNC_ACijena, rsTNC_ADatum, rsTNC_BNtar, rsTNC_BCijena, rsTNC_BDatum, rsTNC_CNtar, rsTNC_CCijena, rsTNC_CDatum, rsTNC_DNtar, rsTNC_DCijena, rsTNC_DDatum, rsTNC_SNtar, rsTNC_SCijena, rsTNC_SDatum As Integer
+Dim rsTNC_ANtar, rsTNC_ACijena, rsTNC_ADatum, rsTNC_BNtar, rsTNC_BCijena, rsTNC_BDatum, rsTNC_CNtar, rsTNC_CCijena, rsTNC_CDatum, rsTNC_DNtar, rsTNC_DCijena, rsTNC_DDatum, rsTNC_SNtar, rsTNC_SCijena, rsTNC_SDatum, rsTNC_KAMPNtar, rsTNC_KAMPCijena, rsTNC_KAMPDatum As Integer
 Dim rsTNC_Ntar, rsTNC_Cijena, rsTNC_Datum As Integer
 Dim rsPoreznaGrupa, rsCEXV As Integer
 
-Dim rsTNC_DatumKraja, rsTNC_ADatumKraja, rsTNC_BDatumKraja, rsTNC_CDatumKraja, rsTNC_DDatumKraja, rsTNC_SDatumKraja As Integer
+Dim rsTNC_DatumKraja, rsTNC_ADatumKraja, rsTNC_BDatumKraja, rsTNC_CDatumKraja, rsTNC_DDatumKraja, rsTNC_SDatumKraja, rsTNC_KAMPDatumKraja As Integer
 
 
 Sub Init()
@@ -65,10 +65,14 @@ Sub Init()
     colTNC_SCijena = "AP"
     colTNC_SNovaCijena = "AQ"
     colTNC_SIndeks = "AR"
-    colRedak = "AS"
-    colPoreznaGrupa = "AT"
-    colCEXV = "AU"
-    colBrojPromjena = "AV"
+    colTNC_KAMPDatum = "AS"
+    colTNC_KAMPCijena = "AT"
+    colTNC_KAMPNovaCijena = "AU"
+    colTNC_KAMPIndeks = "AV"
+    colRedak = "AW"
+    colPoreznaGrupa = "AX"
+    colCEXV = "AY"
+    colBrojPromjena = "AZ"
 
 
     rsSifraArtikla = 0
@@ -121,8 +125,13 @@ Sub Init()
     rsTNC_SDatum = 41
     rsTNC_SDatumKraja = 42
     
-    rsPoreznaGrupa = 43
-    rsCEXV = 44
+    rsTNC_KAMPNtar = 43
+    rsTNC_KAMPCijena = 44
+    rsTNC_KAMPDatum = 45
+    rsTNC_KAMPDatumKraja = 46
+    
+    rsPoreznaGrupa = 47
+    rsCEXV = 48
 
 End Sub
 
@@ -273,6 +282,7 @@ End Function
 Function getRsTNC_DDatum() As Integer
     getRsTNC_DDatum = rsTNC_DDatum
 End Function
+
 Function getRsTNC_DDatumKraja() As Integer
     getRsTNC_DDatumKraja = rsTNC_DDatumKraja
 End Function
@@ -290,6 +300,21 @@ Function getRsTNC_SDatum() As Integer
 End Function
 Function getRsTNC_SDatumKraja() As Integer
     getRsTNC_SDatumKraja = rsTNC_SDatumKraja
+End Function
+
+Function getRsTNC_KAMPNtar() As Integer
+    getRsTNC_KAMPNtar = rsTNC_KAMPNtar
+End Function
+
+Function getRsTNC_KAMPCijena() As Integer
+    getRsTNC_KAMPCijena = rsTNC_KAMPCijena
+End Function
+
+Function getRsTNC_KAMPDatum() As Integer
+    getRsTNC_KAMPDatum = rsTNC_KAMPDatum
+End Function
+Function getRsTNC_KAMPDatumKraja() As Integer
+    getRsTNC_KAMPDatumKraja = rsTNC_KAMPDatumKraja
 End Function
 
 Function getRsPoreznaGrupa() As Integer
@@ -471,6 +496,22 @@ End Function
 
 Function getColTNC_SIndeks() As String
     getColTNC_SIndeks = colTNC_SIndeks
+End Function
+
+Function getcolTNC_KAMPDatum() As String
+    getcolTNC_KAMPDatum = colTNC_KAMPDatum
+End Function
+
+Function getColTNC_KAMPCijena() As String
+    getColTNC_KAMPCijena = colTNC_KAMPCijena
+End Function
+
+Function getColTNC_KAMPNovaCijena() As String
+    getColTNC_KAMPNovaCijena = colTNC_KAMPNovaCijena
+End Function
+
+Function getColTNC_KAMPIndeks() As String
+    getColTNC_KAMPIndeks = colTNC_KAMPIndeks
 End Function
 
 Function getColRedak() As String
