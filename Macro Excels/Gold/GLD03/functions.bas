@@ -140,7 +140,11 @@ Sub loadPrixes()
         'TNC S
         utils.setPrice row, cfg.getColTNC_SDatum, rs(cfg.getRsTNC_SDatum), rs(cfg.getRsTNC_SDatumKraja), cfg.getColTNC_SCijena, rs(cfg.getRsTNC_SCijena), cfg.getColTNC_SNovaCijena, cfg.getColTNC_SIndeks, rs(cfg.getRsTNC_SNtar), cfg.getColBrojPromjena
         'TNC KAMP
+<<<<<<< HEAD
         utils.setPrice row, cfg.getColTNC_KAMPDatum, rs(cfg.getRsTNC_KAMPDatum), rs(cfg.getRsTNC_KAMPDatumKraja), cfg.getColTNC_KAMPCijena, rs(cfg.getRsTNC_KAMPCijena), cfg.getColTNC_KAMPNovaCijena, cfg.getColTNC_KAMPIndeks, rs(cfg.getRsTNC_KAMPNtar), cfg.getColBrojPromjena
+=======
+        utils.setPrice row, cfg.getcolTNC_KAMPDatum, rs(cfg.getRsTNC_KAMPDatum), rs(cfg.getRsTNC_KAMPDatumKraja), cfg.getColTNC_KAMPCijena, rs(cfg.getRsTNC_KAMPCijena), cfg.getColTNC_KAMPNovaCijena, cfg.getColTNC_KAMPIndeks, rs(cfg.getRsTNC_KAMPNtar), cfg.getColBrojPromjena
+>>>>>>> a9894f132eb2755984559004926cbbe9b79f6f68
         
         'Porezna grupa (CTVA) i CEXV
         Range(cfg.getColPoreznaGrupa & row).Value = rs(cfg.getRsPoreznaGrupa)
@@ -299,7 +303,11 @@ Sub insertChanges()
             SQLprix = SQLprix + queries.getInsertPrix(CStr(Range(cfg.getColTNC_SCijena & "3").Value), Range(cfg.getColTNC_SDatum & i).Value, CStr(Range(cfg.getColTNC_SCijena & i).Value), CStr(Range(cfg.getColTNC_SNovaCijena & i).Value), Range(cfg.getColSifraArtikla & i).Value, Range(cfg.getColCEXV & i).Value, Range(cfg.getColPoreznaGrupa & i).Value, CStr(fich), CStr(valuta))
             
             'TNC KAMP - datum, stara cijena, nova cijena - ostalo je sve isto
+<<<<<<< HEAD
             SQLprix = SQLprix + queries.getInsertPrix(CStr(Range(cfg.getColTNC_KAMPCijena & "3").Value), Range(cfg.getColTNC_KAMPDatum & i).Value, CStr(Range(cfg.getColTNC_KAMPCijena & i).Value), CStr(Range(cfg.getColTNC_KAMPNovaCijena & i).Value), Range(cfg.getColSifraArtikla & i).Value, Range(cfg.getColCEXV & i).Value, Range(cfg.getColPoreznaGrupa & i).Value, CStr(fich), CStr(valuta))
+=======
+            SQLprix = SQLprix + queries.getInsertPrix(CStr(Range(cfg.getColTNC_KAMPCijena & "3").Value), Range(cfg.getcolTNC_KAMPDatum & i).Value, CStr(Range(cfg.getColTNC_KAMPCijena & i).Value), CStr(Range(cfg.getColTNC_KAMPNovaCijena & i).Value), Range(cfg.getColSifraArtikla & i).Value, Range(cfg.getColCEXV & i).Value, Range(cfg.getColPoreznaGrupa & i).Value, CStr(fich), CStr(valuta))
+>>>>>>> a9894f132eb2755984559004926cbbe9b79f6f68
             
         Next i
         

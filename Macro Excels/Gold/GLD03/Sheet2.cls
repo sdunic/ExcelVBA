@@ -63,6 +63,12 @@ Private Sub Worksheet_Change(ByVal Target As Range)
             cfg.Init
             utils.setIndex Target.row, cfg.getColTNC_SIndeks, cfg.getColTNC_SCijena, cfg.getColTNC_SNovaCijena, cfg.getColBrojPromjena
         End If
+        
+        'TNC KAMP
+        If Not Intersect(Target, Range(cfg.getColTNC_KAMPNovaCijena & ":" & cfg.getColTNC_KAMPNovaCijena)) Is Nothing Then
+            cfg.Init
+            utils.setIndex Target.row, cfg.getColTNC_KAMPIndeks, cfg.getColTNC_KAMPCijena, cfg.getColTNC_KAMPNovaCijena, cfg.getColBrojPromjena
+        End If
     
     End If
     

@@ -2,7 +2,7 @@ Attribute VB_Name = "cfg"
 'config dokument u kojemu se:
 ' - inicijalno generira db connection string
 ' - parametriziraju stupci u tablici
-' - parametriziraju indeksi recordseta kojeg uèitavamo iz Oracle baze podataka
+' - parametriziraju indeksi recordseta kojeg uï¿½itavamo iz Oracle baze podataka
 Dim colSifraArtikla, colBarkodArtikla, colNazivArtikla, colBrand, colPrincipal As String
 Dim colNivo1, colNaziv1, colNivo2, colNaziv2, colNivo3, colNaziv3, colNivo4, colNaziv4, colNivo5, colNaziv5 As String
 Dim colAsortiman, colTSC, colOpis, colSvojstva As String
