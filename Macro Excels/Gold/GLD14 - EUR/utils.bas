@@ -366,11 +366,13 @@ Private Function MPC_PRICE_S1(val As Double, prevVal As Double, svojstvo As Stri
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_S1 = val
         
-    ElseIf IsInArray("KOSARICA", svojstva) Then
-        MPC_PRICE_S1 = val
+    'iskljuèena pravila prema tasku 1717
+    'KOŠARICA i TOP500 se trebaju diferencirati u S1 cjeniku
+    'ElseIf IsInArray("KOSARICA", svojstva) Then
+        'MPC_PRICE_S1 = val
         
-    ElseIf IsInArray("TOP500", svojstva) Then
-        MPC_PRICE_S1 = prevVal
+    'ElseIf IsInArray("TOP500", svojstva) Then
+        'MPC_PRICE_S1 = prevVal
         
     Else
         If val >= 20 Then
@@ -418,11 +420,14 @@ Private Function MPC_PRICE_S2(val As Double, prevVal As Double, svojstvo As Stri
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_S2 = val
         
-    ElseIf IsInArray("KOSARICA", svojstva) Then
-        MPC_PRICE_S2 = val
         
-    ElseIf IsInArray("TOP500", svojstva) Then
-        MPC_PRICE_S2 = prevVal
+    'iskljuèena pravila prema tasku 1717
+    'KOŠARICA i TOP500 se trebaju diferencirati u S2 cjeniku
+    'ElseIf IsInArray("KOSARICA", svojstva) Then
+        'MPC_PRICE_S2 = val
+        
+    'ElseIf IsInArray("TOP500", svojstva) Then
+        'MPC_PRICE_S2 = prevVal
         
     Else
         If val >= 20 Then
@@ -470,11 +475,13 @@ Private Function MPC_PRICE_S3(val As Double, prevVal As Double, svojstvo As Stri
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_S3 = val
         
-    ElseIf IsInArray("KOSARICA", svojstva) Then
-        MPC_PRICE_S3 = val
+    'iskljuèena pravila prema tasku 1717
+    'KOŠARICA i TOP500 se trebaju diferencirati u S3 cjeniku
+    'ElseIf IsInArray("KOSARICA", svojstva) Then
+        'MPC_PRICE_S3 = val
         
-    ElseIf IsInArray("TOP500", svojstva) Then
-        MPC_PRICE_S3 = prevVal
+    'ElseIf IsInArray("TOP500", svojstva) Then
+        'MPC_PRICE_S3 = prevVal
         
     Else
         If val >= 20 Then
@@ -522,11 +529,13 @@ Private Function MPC_PRICE_KAMP(val As Double, prevVal As Double, svojstvo As St
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_KAMP = val
         
-    ElseIf IsInArray("KOSARICA", svojstva) Then
-        MPC_PRICE_KAMP = val
+    'iskljuèena pravila prema tasku 1717
+    'KOŠARICA i TOP500 se trebaju diferencirati u KAMP cjeniku
+    'ElseIf IsInArray("KOSARICA", svojstva) Then
+        'MPC_PRICE_KAMP = val
         
-    ElseIf IsInArray("TOP500", svojstva) Then
-        MPC_PRICE_KAMP = prevVal
+    'ElseIf IsInArray("TOP500", svojstva) Then
+        'MPC_PRICE_KAMP = prevVal
         
     Else
         If val >= 20 Then

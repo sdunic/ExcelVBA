@@ -47,7 +47,7 @@ Public Function getDocName() As String
 End Function
 
 Public Function getDocVersion() As String
-    getDocVersion = "1.01"
+    getDocVersion = "1.02"
 End Function
 
 
