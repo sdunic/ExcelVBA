@@ -200,6 +200,9 @@ Private Function MPC_PRICE_B(val As Double, prevVal As Double, svojstvo As Strin
     
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_B = val
+    
+    ElseIf IsInArray("KOSARICA", svojstva) And IsInArray("SEZONA", svojstva) Then
+        MPC_PRICE_B = val
    
     ElseIf IsInArray("KOSARICA", svojstva) Then
         MPC_PRICE_B = val
@@ -253,6 +256,9 @@ Private Function MPC_PRICE_C(val As Double, prevVal As Double, svojstvo As Strin
     svojstva = Split(svojstvo, ";")
     
    If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
+        MPC_PRICE_C = val
+    
+    ElseIf IsInArray("KOSARICA", svojstva) And IsInArray("SEZONA", svojstva) Then
         MPC_PRICE_C = val
 
     ElseIf IsInArray("KOSARICA", svojstva) Then
@@ -312,6 +318,9 @@ Private Function MPC_PRICE_D(val As Double, prevVal As Double, svojstvo As Strin
     
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_D = val
+    
+    ElseIf IsInArray("KOSARICA", svojstva) And IsInArray("SEZONA", svojstva) Then
+        MPC_PRICE_D = val
         
     ElseIf IsInArray("KOSARICA", svojstva) Then
         MPC_PRICE_D = val
@@ -366,6 +375,9 @@ Private Function MPC_PRICE_S1(val As Double, prevVal As Double, svojstvo As Stri
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_S1 = val
         
+    ElseIf IsInArray("KOSARICA", svojstva) And IsInArray("SEZONA", svojstva) Then
+        MPC_PRICE_S1 = val
+    
     'iskljuèena pravila prema tasku 1717
     'KOŠARICA i TOP500 se trebaju diferencirati u S1 cjeniku
     'ElseIf IsInArray("KOSARICA", svojstva) Then
@@ -420,6 +432,8 @@ Private Function MPC_PRICE_S2(val As Double, prevVal As Double, svojstvo As Stri
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_S2 = val
         
+    ElseIf IsInArray("KOSARICA", svojstva) And IsInArray("SEZONA", svojstva) Then
+        MPC_PRICE_S2 = val
         
     'iskljuèena pravila prema tasku 1717
     'KOŠARICA i TOP500 se trebaju diferencirati u S2 cjeniku
@@ -475,6 +489,9 @@ Private Function MPC_PRICE_S3(val As Double, prevVal As Double, svojstvo As Stri
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_S3 = val
         
+    ElseIf IsInArray("KOSARICA", svojstva) And IsInArray("SEZONA", svojstva) Then
+        MPC_PRICE_S3 = val
+        
     'iskljuèena pravila prema tasku 1717
     'KOŠARICA i TOP500 se trebaju diferencirati u S3 cjeniku
     'ElseIf IsInArray("KOSARICA", svojstva) Then
@@ -527,6 +544,9 @@ Private Function MPC_PRICE_KAMP(val As Double, prevVal As Double, svojstvo As St
     svojstva = Split(svojstvo, ";")
     
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
+        MPC_PRICE_KAMP = val
+        
+     ElseIf IsInArray("KOSARICA", svojstva) And IsInArray("SEZONA", svojstva) Then
         MPC_PRICE_KAMP = val
         
     'iskljuèena pravila prema tasku 1717
