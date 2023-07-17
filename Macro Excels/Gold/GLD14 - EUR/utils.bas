@@ -42,10 +42,15 @@ Function getPriceValue(val As Variant) As Double
 End Function
 
 
-Function CalculatePrice(ntar As String, opis As String, svojstvo As String, val As Double, prevVal As Double) As Double
+Function CalculatePrice(ntar As String, opis As String, svojstvo As String, val As Double, prevVal As Double, basicPrice As Double) As Double
     
     Dim maxDiff As Double
-    maxDiff = 0.5
+    If basicPrice < 15 Then
+        maxDiff = 0.5
+    Else
+        maxDiff = 0.4
+    End If
+    
     
     If UCase(opis) = "TOP" Or UCase(opis) = "PL" Or UCase(opis) = "/" Or Len(opis) = 0 Then
         If ntar = "7850" Then

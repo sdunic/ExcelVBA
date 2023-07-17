@@ -120,15 +120,15 @@ End Sub
 
 Sub initFormulas()
 
-    Range("V" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC19,0)" 'PRIJEDLOG_MPC_A_CIJENA
-    Range("Y" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3])" 'PRIJEDLOG_MPC_B_CIJENA
-    Range("AB" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3])" 'PRIJEDLOG_MPC_C_CIJENA
-    Range("AE" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3])" 'PRIJEDLOG_MPC_D_CIJENA
+    Range("V" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC19,0,RC19)" 'PRIJEDLOG_MPC_A_CIJENA
+    Range("Y" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3],RC19)" 'PRIJEDLOG_MPC_B_CIJENA
+    Range("AB" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3],RC19)" 'PRIJEDLOG_MPC_C_CIJENA
+    Range("AE" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3],RC19)" 'PRIJEDLOG_MPC_D_CIJENA
     
-    Range("AH" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3])" 'PRIJEDLOG_MPC_S1_CIJENA
-    Range("AK" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3])" 'PRIJEDLOG_MPC_S2_CIJENA
-    Range("AN" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3])" 'PRIJEDLOG_MPC_S3_CIJENA
-    Range("AQ" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3])" 'PRIJEDLOG_MPC_KAMP_CIJENA
+    Range("AH" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3],RC19)" 'PRIJEDLOG_MPC_S1_CIJENA
+    Range("AK" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3],RC19)" 'PRIJEDLOG_MPC_S2_CIJENA
+    Range("AN" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3],RC19)" 'PRIJEDLOG_MPC_S3_CIJENA
+    Range("AQ" & 5).Formula2R1C1 = "=CalculatePrice(RC[-2],RC17,RC18,RC22,RC[-3],RC19)" 'PRIJEDLOG_MPC_KAMP_CIJENA
     
 End Sub
 
