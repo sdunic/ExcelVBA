@@ -72,11 +72,16 @@ Function CalculatePrice(ntar As String, opis As String, svojstvo As String, val 
         ElseIf ntar = "7649" Then
             'MPC KAMP
             CalculatePrice = MPC_PRICE_KAMP(val, prevVal, svojstvo, maxDiff)
-        
-        Else
-            CalculatePrice = 0
         End If
         
+    ElseIf Len(opis) > 0 Then
+        If ntar = "7850" Or ntar = "7800" Then
+            CalculatePrice = val
+        Else
+            CalculatePrice = prevVal
+        End If
+    Else
+        CalculatePrice = 0
     End If
 
 End Function
