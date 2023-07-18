@@ -134,10 +134,10 @@ Private Function MPC_ROUNDPRICE(val As Double, pricelist As String) As Double
     
     MPC_ROUNDPRICE = val
     
-    If val >= 20 Then
+    If val >= 15 Then
         'A,B,C,D,S1,S2,S3,KAMP ROUND UP, zaokruživanje na 0,49 i 0,99
         If pricelist = "A" Or pricelist = "B" Or pricelist = "C" Or pricelist = "D" Or pricelist = "S1" Or pricelist = "S2" Or pricelist = "S3" Or pricelist = "KAMP" Then
-            MPC_ROUNDPRICE = Application.WorksheetFunction.Ceiling(val, 0.5) - 0.01
+            MPC_ROUNDPRICE = Application.WorksheetFunction.Ceiling(val, 0.1) - 0.01
         End If
         
     ElseIf val >= 7 Then
