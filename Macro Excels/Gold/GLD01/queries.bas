@@ -252,11 +252,10 @@ Function selectPurchaseConditionsDataFromInterfaceTable(msgid As String, barcode
 & " TNUFUT605, TNUVAL606, TNUUAPP606, to_char(TNUDDEB606, ''dd.mm.yyyy''), to_char(TNUDFIN606, ''dd.mm.yyyy''), TNUPAST606, TNUFUT606, TNUUSER, TNUSTRT, TNUSERRID, TNUSDTRT, " _
 & " TNUSMESS , TNUGTRT, TNUGERRID, TNUGDTRT, TNUGMESS, TNUDCRE, TNUDMAJ, TNUTIL, TNUNMAJ "
 
-    tmp = "(select arccode from artvl, artul, artuv, artcoca where ARUSEQVL = ARLSEQVL and arlcexr = TNUCEXR and pkartstock.RecupCinlUVC(123, arucinl) = arvcinv and arutypul = 1 " _
-    & "and arccinv = arvcinv and trunc(current_date) between arcddeb and arcdfin and arcieti = 1 and rownum = 1)"
+    tmp = "(select arccode from artcoca where arccinv = (select arvcinv from artuv where arvcexr = TNUCEXR and arvcexv = 1) and trunc(current_date) between arcddeb and arcdfin and arcieti = 1 and rownum = 1)"
 
     selectPurchaseConditionsDataFromInterfaceTable = "EXEC ('" _
-            & "SELECT " & stupci & ", (select arccode from artvl, artul, artuv, artcoca where ARUSEQVL = ARLSEQVL and ARLCEXVL = TNULV and arlcexr = TNUCEXR and pkartstock.RecupCinlUVC(123, arucinl) = arvcinv and arutypul = 1 and arccinv = arvcinv and trunc(current_date) between arcddeb and arcdfin and arcieti = 1 and rownum = 1) as BARKOD, " _
+            & "SELECT " & stupci & ", (select arccode from artcoca where arccinv = (select arvcinv from artuv where arvcexr = TNUCEXR and arvcexv = 1) and trunc(current_date) between arcddeb and arcdfin and arcieti = 1 and rownum = 1) as BARKOD, " _
             & "(SELECT pkattrival.getLibelleCourtAttribut(123, aatccla, aatcatt, ''GB'') FROM artattri, artrac where aatcinr = artcinr and artcexr = TNUCEXR and aatccla = ''PRINCIP'' and trunc(current_date) between aatddeb and aatdfin ) PRINCIPAL, " _
             & "(SELECT max(uatcatt) FROM artuvattri, artuv where uatcinv = arvcinv and arvcexr = TNUCEXR and uatccla = ''ASORT'' and trunc(current_date) between uatddeb and uatdfin ) ASORTIMAN " _
             & "FROM SIS14_NAB_UVJETI " _

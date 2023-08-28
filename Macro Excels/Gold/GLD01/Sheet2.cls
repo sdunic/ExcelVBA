@@ -34,8 +34,8 @@ Private Sub Worksheet_Change(ByVal Target As Range)
             ActiveWorkbook.Sheets(4).Select
                                     
             Dim i, j As Long
-            For i = Target.column To (Target.column + (Target.Count / Target.rows.Count) - 1)
-                For j = Target.row To (Target.row + Target.rows.Count - 1)
+            For i = Target.column To (Target.column + (Target.Count / Target.Rows.Count) - 1)
+                For j = Target.row To (Target.row + Target.Rows.Count - 1)
                     Dim cell As Range
                     
                     If Target.row > 5 And (Target.column = Range(cfg.getcTNUNNC & Target.row).column Or _
@@ -90,19 +90,36 @@ Private Sub Worksheet_Change(ByVal Target As Range)
                     Else
                         
                         If Len(targetValue) > 0 And targetValue <> CStr(ActiveWorkbook.Sheets(4).Range("C" & cell.row).Value2) Then
-                            ActiveWorkbook.Sheets(4).Range("D" & cell.row).Value = targetValue
-                            ActiveWorkbook.Sheets(4).Range("E" & cell.row).Value = 1
-                            ActiveWorkbook.Sheets(4).Range("F" & cell.row).Value = utils.getUserName
+                            Dim ind As Double
+                            Dim ans As Integer
+                            ind = targetValue / ActiveWorkbook.Sheets(4).Range("C" & cell.row).Value2
                             
-                            If Target.Font.ColorIndex <> 3 Then
-                                bpr = cfg.getcBROJPROMJENA
-                                Range(bpr & j).Value = Range(bpr & j).Value + 1
+                            ans = 6
+                            If ind > 1.5 Then
+                                ans = MsgBox("Index cijene je > 150% od trenutno aktivne cijene. Jeste li sigurni da želite promijeniti cijenu?", vbYesNo, "Upozorenje")
                             End If
                             
-                            With Cells(j, i).Font
-                                .Color = -16776961
-                                .TintAndShade = 0
-                            End With
+                            If ind < 0.5 Then
+                                ans = MsgBox("Index cijene je < 50% od trenutno aktivne cijene. Jeste li sigurni da želite promijeniti cijenu?", vbYesNo, "Upozorenje")
+                            End If
+                            
+                            If ans = 6 Then
+                                ActiveWorkbook.Sheets(4).Range("D" & cell.row).Value = targetValue
+                                ActiveWorkbook.Sheets(4).Range("E" & cell.row).Value = 1
+                                ActiveWorkbook.Sheets(4).Range("F" & cell.row).Value = utils.getUserName
+                                
+                                If Target.Font.ColorIndex <> 3 Then
+                                    bpr = cfg.getcBROJPROMJENA
+                                    Range(bpr & j).Value = Range(bpr & j).Value + 1
+                                End If
+                                
+                                With Cells(j, i).Font
+                                    .Color = -16776961
+                                    .TintAndShade = 0
+                                End With
+                            Else
+                                Target.Value = CDbl(ActiveWorkbook.Sheets(4).Range("C" & cell.row).Value2)
+                            End If
                         Else
                             ActiveWorkbook.Sheets(4).Range("D" & cell.row).ClearContents
                             ActiveWorkbook.Sheets(4).Range("E" & cell.row).ClearContents
