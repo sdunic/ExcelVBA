@@ -90,17 +90,20 @@ Private Sub Worksheet_Change(ByVal Target As Range)
                     Else
                         
                         If Len(targetValue) > 0 And targetValue <> CStr(ActiveWorkbook.Sheets(4).Range("C" & cell.row).Value2) Then
+                        
                             Dim ind As Double
                             Dim ans As Integer
-                            ind = targetValue / ActiveWorkbook.Sheets(4).Range("C" & cell.row).Value2
-                            
                             ans = 6
-                            If ind > 1.5 Then
-                                ans = MsgBox("Index cijene je > 150% od trenutno aktivne cijene. Jeste li sigurni da želite promijeniti cijenu?", vbYesNo, "Upozorenje")
-                            End If
                             
-                            If ind < 0.5 Then
-                                ans = MsgBox("Index cijene je < 50% od trenutno aktivne cijene. Jeste li sigurni da želite promijeniti cijenu?", vbYesNo, "Upozorenje")
+                            If Target.column = Range(cfg.getcTNUPACH & Target.row).column Then
+                                ind = targetValue / ActiveWorkbook.Sheets(4).Range("C" & cell.row).Value2
+                                If ind > 1.5 Then
+                                    ans = MsgBox("Index cijene je > 150% od trenutno aktivne cijene. Jeste li sigurni da želite promijeniti cijenu?", vbYesNo, "Upozorenje")
+                                End If
+                                
+                                If ind < 0.5 Then
+                                    ans = MsgBox("Index cijene je < 50% od trenutno aktivne cijene. Jeste li sigurni da želite promijeniti cijenu?", vbYesNo, "Upozorenje")
+                                End If
                             End If
                             
                             If ans = 6 Then
@@ -120,6 +123,7 @@ Private Sub Worksheet_Change(ByVal Target As Range)
                             Else
                                 Target.Value = CDbl(ActiveWorkbook.Sheets(4).Range("C" & cell.row).Value2)
                             End If
+                            
                         Else
                             ActiveWorkbook.Sheets(4).Range("D" & cell.row).ClearContents
                             ActiveWorkbook.Sheets(4).Range("E" & cell.row).ClearContents
