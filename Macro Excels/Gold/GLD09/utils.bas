@@ -21,6 +21,18 @@ Function getDateString(val As Date) As String
     End If
 End Function
 
+Public Function IsInArray(stringToBeFound As String, arr As Variant) As Boolean
+    Dim i
+    For i = 0 To UBound(arr, 2)
+        If arr(0, i) = stringToBeFound Then
+            IsInArray = True
+            Exit Function
+        End If
+    Next i
+    IsInArray = False
+
+End Function
+
 Function getPriceValue(val As Variant) As String
     If IsEmpty(val) Then
         getPriceValue = "NULL"

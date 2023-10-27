@@ -102,6 +102,10 @@ Sub insertInvoice()
         'YES
         cfg.Init
         
+        Dim control As Boolean
+        control = True
+        Dim cexrs() As Variant
+                
         Dim i As Long
         LastRow = utils.getLastRow(cfg.get_artikl)
                 
@@ -119,6 +123,15 @@ Sub insertInvoice()
         Set rsMSGID = Nothing
         
         
+        'dohvatiti artikle u listu za kontrolu cexra
+        sqlCexrs = queries.getCexrs
+        Set rsCexrs = CreateObject("ADODB.Recordset")
+        rsCexrs.Open sqlCexrs, Cn, adOpenStatic
+        cexrs = rsCexrs.getRows
+        rsCexrs.Close
+        Set rsCexrs = Nothing
+        
+        
         fyp = ""
         If ActiveSheet.name = "STORNO GOLD FAKTURE" Then
             fyp = "2"
@@ -128,6 +141,9 @@ Sub insertInvoice()
         SQLinsertInvoice = ""
         redakZaglavlja = cfg.get_zaglavlje
         For i = cfg.get_stavke To LastRow - 1
+        
+     
+            control = utils.IsInArray(CStr(Split(Range(cfg.get_artikl & i).Value, " | ")(0)), cexrs)
             
             SQLinsertInvoice = SQLinsertInvoice & queries.insertSIS15(CStr(msgid), (i - cfg.get_stavke) + 1, CStr(Split(Range(cfg.get_lokacija & redakZaglavlja).Value, " | ")(0)), CStr(Range(cfg.get_tipFakture & redakZaglavlja).Value), _
             CStr(Split(Range(cfg.get_kupac & redakZaglavlja).Value, " | ")(0)), CStr(Split(Range(cfg.get_ugovor & redakZaglavlja).Value, " | ")(0)), CStr(Range(cfg.get_datumFakture & redakZaglavlja).Value), _
@@ -141,27 +157,31 @@ Sub insertInvoice()
             End If
         Next i
         
-        
-        Debug.Print SQLinsertInvoice
-
-        Set rs = CreateObject("ADODB.Recordset")
-        rs.Open SQLinsertInvoice, Cn, adOpenStatic
-        Set rs = Nothing
+        If control = True Then
+            Debug.Print SQLinsertInvoice
+            Set rs = CreateObject("ADODB.Recordset")
+            rs.Open SQLinsertInvoice, Cn, adOpenStatic
+            Set rs = Nothing
+            
+            insertLog "insert_invoice", _
+                "{ reasonCode: " & Split(Range(cfg.get_reasonCodeTekst & cfg.get_reasonCodeRedak).Value, " | ")(0) _
+                & ", headerSite: " & Split(Range(cfg.get_lokacija & cfg.get_zaglavlje).Value, " | ")(0) _
+                & ", invoiceType: " & Range(cfg.get_tipFakture & cfg.get_zaglavlje).Value _
+                & ", customer: " & Split(Range(cfg.get_kupac & cfg.get_zaglavlje).Value, " | ")(0) _
+                & ", contract: " & Split(Range(cfg.get_ugovor & cfg.get_zaglavlje).Value, " | ")(0) _
+                & ", date: " & Range(cfg.get_datumFakture & cfg.get_zaglavlje).Value _
+                & ", remark: " & Range(cfg.get_napomena & cfg.get_zaglavlje).Value _
+                & " }", CStr(SQLinsertInvoice)
+            
+            MsgBox "Faktura u pripremi je upješno poslana GOLD!", vbOKOnly, "Informacija"
+            
+        Else
+            MsgBox "Na popisu u stupcu B se nalaze nedozvoljeni artikli, faktura nije poslana u GOLD!", vbCritical, "Greška"
+        End If
+                
         
         Cn.Close
         Set Cn = Nothing
-        
-        insertLog "insert_invoice", _
-        "{ reasonCode: " & Split(Range(cfg.get_reasonCodeTekst & cfg.get_reasonCodeRedak).Value, " | ")(0) _
-        & ", headerSite: " & Split(Range(cfg.get_lokacija & cfg.get_zaglavlje).Value, " | ")(0) _
-        & ", invoiceType: " & Range(cfg.get_tipFakture & cfg.get_zaglavlje).Value _
-        & ", customer: " & Split(Range(cfg.get_kupac & cfg.get_zaglavlje).Value, " | ")(0) _
-        & ", contract: " & Split(Range(cfg.get_ugovor & cfg.get_zaglavlje).Value, " | ")(0) _
-        & ", date: " & Range(cfg.get_datumFakture & cfg.get_zaglavlje).Value _
-        & ", remark: " & Range(cfg.get_napomena & cfg.get_zaglavlje).Value _
-        & " }", CStr(SQLinsertInvoice)
-        
-        MsgBox "Faktura u pripremi je upješno poslana GOLD!", vbOKOnly, "Informacija"
         
     ElseIf ans = 7 Then
         'NO

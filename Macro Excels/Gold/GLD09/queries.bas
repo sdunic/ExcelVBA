@@ -108,6 +108,28 @@ End Function
 
 Function searchArticles(code As String, name As String) As String
     searchArticles = "EXEC ('SELECT arvcexr, arccode, arvcexv, pkstrucobj.get_desc(123, arccinr, ''HR'') opis " _
+            & "FROM wpline, wplig, artcoca, artuv WHERE wlgcinl = arvcinv and wlgcinl = arccinv and wlgcinwpl = wplcinwpl and wplnum = ''CORE-NON'' "
+       
+    If Len(code) > 0 Then
+        searchArticles = searchArticles & " AND (ARVCEXR like ''%" & UCase(code) & "%'' OR ARCCODE like ''%" & UCase(code) & "%'')"
+    End If
+    
+    If Len(name) > 0 Then
+        searchArticles = searchArticles & " AND pkstrucobj.get_desc(123, arccinr, ''HR'') like ''" & UCase(name) & "'' "
+    End If
+            
+    searchArticles = searchArticles & "') at [" + db.getOracleServer + "];"
+End Function
+
+
+Function getCexrs() As String
+    getCexrs = "EXEC ('SELECT arvcexr FROM wpline, wplig, artcoca, artuv WHERE wlgcinl = arvcinv and wlgcinl = arccinv and wlgcinwpl = wplcinwpl and wplnum = ''CORE-NON'' "
+    getCexrs = getCexrs & "') at [" + db.getOracleServer + "];"
+End Function
+
+
+Function searchAnalyticalArticles(code As String, name As String) As String
+    searchArticles = "EXEC ('SELECT arvcexr, arccode, arvcexv, pkstrucobj.get_desc(123, arccinr, ''HR'') opis " _
             & "FROM artcoca, artuv WHERE arccinv = arvcinv"
        
     If Len(code) > 0 Then

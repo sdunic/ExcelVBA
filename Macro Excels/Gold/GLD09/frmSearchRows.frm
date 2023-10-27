@@ -226,7 +226,7 @@ Private Sub btnSearchAnalyticalArticle_Click()
     Cn.commandtimeout = 1000
     Cn.Open db.getConnectionString
     
-    sqlstr = queries.searchArticles(txtAnalyticalArticleCode.Value, txtAnalyticalArticleName.Value)
+    sqlstr = queries.searchAnalyticalArticles(txtAnalyticalArticleCode.Value, txtAnalyticalArticleName.Value)
     
     Set rs = CreateObject("ADODB.Recordset")
     rs.Open sqlstr, Cn, adOpenStatic
