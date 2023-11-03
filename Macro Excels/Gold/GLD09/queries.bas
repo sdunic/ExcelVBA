@@ -107,7 +107,7 @@ Function searchMSNodes(code As String, name As String) As String
 End Function
 
 Function searchArticles(code As String, name As String) As String
-    searchArticles = "EXEC ('SELECT arvcexr, arccode, arvcexv, pkstrucobj.get_desc(123, arccinr, ''HR'') opis " _
+    searchArticles = "EXEC ('SELECT distinct arvcexr, arccode, arvcexv, pkstrucobj.get_desc(123, arccinr, ''HR'') opis " _
             & "FROM wpline, wplig, artcoca, artuv WHERE wlgcinl = arvcinv and wlgcinl = arccinv and wlgcinwpl = wplcinwpl and wplnum = ''CORE-NON'' "
        
     If Len(code) > 0 Then
@@ -123,7 +123,7 @@ End Function
 
 
 Function getCexrs() As String
-    getCexrs = "EXEC ('SELECT arvcexr FROM wpline, wplig, artcoca, artuv WHERE wlgcinl = arvcinv and wlgcinl = arccinv and wlgcinwpl = wplcinwpl and wplnum = ''CORE-NON'' "
+    getCexrs = "EXEC ('SELECT distinct arvcexr FROM wpline, wplig, artcoca, artuv WHERE wlgcinl = arvcinv and wlgcinl = arccinv and wlgcinwpl = wplcinwpl and wplnum = ''CORE-NON'' "
     getCexrs = getCexrs & "') at [" + db.getOracleServer + "];"
 End Function
 
