@@ -129,18 +129,18 @@ End Function
 
 
 Function searchAnalyticalArticles(code As String, name As String) As String
-    searchArticles = "EXEC ('SELECT arvcexr, arccode, arvcexv, pkstrucobj.get_desc(123, arccinr, ''HR'') opis " _
+    searchAnalyticalArticles = "EXEC ('SELECT arvcexr, arccode, arvcexv, pkstrucobj.get_desc(123, arccinr, ''HR'') opis " _
             & "FROM artcoca, artuv WHERE arccinv = arvcinv"
        
     If Len(code) > 0 Then
-        searchArticles = searchArticles & " AND (ARVCEXR like ''%" & UCase(code) & "%'' OR ARCCODE like ''%" & UCase(code) & "%'')"
+        searchAnalyticalArticles = searchAnalyticalArticles & " AND (ARVCEXR like ''%" & UCase(code) & "%'' OR ARCCODE like ''%" & UCase(code) & "%'')"
     End If
     
     If Len(name) > 0 Then
-        searchArticles = searchArticles & " AND pkstrucobj.get_desc(123, arccinr, ''HR'') like ''" & UCase(name) & "'' "
+        searchAnalyticalArticles = searchAnalyticalArticles & " AND pkstrucobj.get_desc(123, arccinr, ''HR'') like ''" & UCase(name) & "'' "
     End If
             
-    searchArticles = searchArticles & "') at [" + db.getOracleServer + "];"
+    searchAnalyticalArticles = searchAnalyticalArticles & "') at [" + db.getOracleServer + "];"
 End Function
 
 
