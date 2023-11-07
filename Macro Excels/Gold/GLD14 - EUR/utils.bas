@@ -95,24 +95,27 @@ End Function
 Sub testFunction()
 
     Dim price As Double
+    Dim svojstvo As String
+    
+    svojstvo = ""
     
     'price = 0.59
     'price = 2.29
     'price = 4.09
     'price = 7.09
-    price = 20.09
+    price = 0.11
     
     Dim a, b, c, d, s1, s2, s3, kamp As Double
     
-    a = CalculatePrice("7850", "", "", price, 0)
-    b = CalculatePrice("7800", "", "", CDbl(a), CDbl(a))
-    c = CalculatePrice("7750", "", "", CDbl(a), CDbl(b))
-    d = CalculatePrice("7700", "", "", CDbl(a), CDbl(c))
+    a = CalculatePrice("7850", "", svojstvo, price, 0, price)
+    b = CalculatePrice("7800", "", svojstvo, CDbl(a), CDbl(a), price)
+    c = CalculatePrice("7750", "", svojstvo, CDbl(a), CDbl(b), price)
+    d = CalculatePrice("7700", "", svojstvo, CDbl(a), CDbl(c), price)
     
-    s1 = CalculatePrice("7650", "", "", CDbl(a), CDbl(d))
-    s2 = CalculatePrice("7651", "", "", CDbl(a), CDbl(s1))
-    s3 = CalculatePrice("7652", "", "", CDbl(a), CDbl(s2))
-    kamp = CalculatePrice("7649", "", "", CDbl(a), CDbl(s3))
+    s1 = CalculatePrice("7650", "", svojstvo, CDbl(a), CDbl(d), price)
+    s2 = CalculatePrice("7651", "", svojstvo, CDbl(a), CDbl(s1), price)
+    s3 = CalculatePrice("7652", "", svojstvo, CDbl(a), CDbl(s2), price)
+    kamp = CalculatePrice("7649", "", svojstvo, CDbl(a), CDbl(s3), price)
     
     
     Debug.Print "INPUT: " & price
@@ -265,6 +268,12 @@ Private Function MPC_PRICE_C(val As Double, prevVal As Double, svojstvo As Strin
     Dim svojstva() As String
     svojstva = Split(svojstvo, ";")
     
+    Dim top500_cijene() As Variant
+    top500_cijene() = Array(0.6, 0.5, 0.46, 0.41, 0.4, 0.36, 0.31, 0.3, 0.26, 0.2, 0.16, 0.12, 0.11, 0.1, 0.02, 0.01)
+    Dim woSvojstvo_cijene() As Variant
+    woSvojstvo_cijene() = Array(0.38, 0.34, 0.29, 0.2, 0.19, 0.15, 0.11, 0.1, 0.06, 0.02, 0.01)
+    
+    
    If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_C = val
     
@@ -277,7 +286,9 @@ Private Function MPC_PRICE_C(val As Double, prevVal As Double, svojstvo As Strin
         
     ElseIf IsInArray("TOP500", svojstva) Then
         'TODO
-        If val * 1.03 - prevVal <= maxDiff Then
+        If IsInArray(val, top500_cijene) Then
+            MPC_PRICE_C = prevVal
+        ElseIf val * 1.03 - prevVal <= maxDiff Then
             MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.03, "C")
         Else
             MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C")
@@ -309,7 +320,9 @@ Private Function MPC_PRICE_C(val As Double, prevVal As Double, svojstvo As Strin
                 MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C")
             End If
         Else 'less then 2€
-            If val * 1.1 - prevVal <= maxDiff Then
+            If IsInArray(val, woSvojstvo_cijene) Then
+                MPC_PRICE_C = prevVal
+            ElseIf val * 1.1 - prevVal <= maxDiff Then
                 MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.1, "C")
             Else
                 MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C")
