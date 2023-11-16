@@ -269,7 +269,7 @@ Private Function MPC_PRICE_C(val As Double, prevVal As Double, svojstvo As Strin
     svojstva = Split(svojstvo, ";")
     
     Dim top500_cijene() As Variant
-    top500_cijene() = Array(0.6, 0.5, 0.46, 0.41, 0.4, 0.36, 0.31, 0.3, 0.26, 0.2, 0.16, 0.12, 0.11, 0.1, 0.02, 0.01)
+    top500_cijene() = Array(0.6, 0.5, 0.46, 0.41, 0.4, 0.36, 0.31, 0.3, 0.26, 0.2, 0.16, 0.12, 0.11, 0.1, 0.02, 0.01, 0.06, 0.07, 0.21, 0.7, 0.8)
     Dim woSvojstvo_cijene() As Variant
     woSvojstvo_cijene() = Array(0.38, 0.34, 0.29, 0.2, 0.19, 0.15, 0.11, 0.1, 0.06, 0.02, 0.01)
     
