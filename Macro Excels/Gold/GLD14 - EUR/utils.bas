@@ -45,38 +45,40 @@ End Function
 Function CalculatePrice(ntar As String, opis As String, svojstvo As String, val As Double, prevVal As Double, basicPrice As Double) As Double
     
     Dim maxDiff As Double
-    If basicPrice < 15 Then
-        maxDiff = 0.5
-    Else
-        maxDiff = 0.4
-    End If
+    'If basicPrice < 15 Then
+    '    maxDiff = 0.5
+    'Else
+    '    maxDiff = 0.4
+    'End If
+    
+    maxDiff = 0.5
     
     
     If UCase(opis) = "TOP" Or UCase(opis) = "PL" Or UCase(opis) = "/" Or Len(opis) = 0 Then
         If ntar = "7850" Then
             'MPC A
-            CalculatePrice = MPC_ROUNDPRICE(val, "A")
+            CalculatePrice = MPC_ROUNDPRICE(val, "A", opis)
         ElseIf ntar = "7800" Then
             'MPC B
-            CalculatePrice = MPC_PRICE_B(val, val, svojstvo, maxDiff)
+            CalculatePrice = MPC_PRICE_B(val, val, svojstvo, maxDiff, opis)
         ElseIf ntar = "7750" Then
             'MPC C
-            CalculatePrice = MPC_PRICE_C(val, prevVal, svojstvo, maxDiff)
+            CalculatePrice = MPC_PRICE_C(val, prevVal, svojstvo, maxDiff, opis)
         ElseIf ntar = "7700" Then
             'MPC D
-            CalculatePrice = MPC_PRICE_D(val, prevVal, svojstvo, maxDiff)
+            CalculatePrice = MPC_PRICE_D(val, prevVal, svojstvo, maxDiff, opis)
         ElseIf ntar = "7650" Then
             'MPC S1 = C
-            CalculatePrice = MPC_PRICE_S1(val, prevVal, svojstvo, maxDiff)
+            CalculatePrice = MPC_PRICE_S1(val, prevVal, svojstvo, maxDiff, opis)
         ElseIf ntar = "7651" Then
             'MPC S2 = D
-            CalculatePrice = MPC_PRICE_S2(val, prevVal, svojstvo, maxDiff)
+            CalculatePrice = MPC_PRICE_S2(val, prevVal, svojstvo, maxDiff, opis)
         ElseIf ntar = "7652" Then
             'MPC S3
-            CalculatePrice = MPC_PRICE_S3(val, prevVal, svojstvo, maxDiff)
+            CalculatePrice = MPC_PRICE_S3(val, prevVal, svojstvo, maxDiff, opis)
         ElseIf ntar = "7649" Then
             'MPC KAMP
-            CalculatePrice = MPC_PRICE_KAMP(val, prevVal, svojstvo, maxDiff)
+            CalculatePrice = MPC_PRICE_KAMP(val, prevVal, svojstvo, maxDiff, opis)
         End If
         
     ElseIf Len(opis) > 0 Then
@@ -98,12 +100,18 @@ Sub testFunction()
     Dim svojstvo As String
     
     svojstvo = ""
+    svojstvo = "KOSARICA"
+    svojstvo = "SEZONA"
+    'price = 8.49
+    'price = 7.39
+    price = 9.29
     
     'price = 0.59
     'price = 2.29
     'price = 4.09
     'price = 7.09
-    price = 0.11
+    'price = 2.19
+    
     
     Dim a, b, c, d, s1, s2, s3, kamp As Double
     
@@ -119,94 +127,133 @@ Sub testFunction()
     
     
     Debug.Print "INPUT: " & price
-    Debug.Print "A: " & a
-    Debug.Print "B: " & b
-    Debug.Print "C: " & c
-    Debug.Print "D: " & d
-    Debug.Print "S1: " & s1
-    Debug.Print "S2: " & s2
-    Debug.Print "S3: " & s3
-    Debug.Print "KAMP: " & kamp
-    
+    Debug.Print "SVOJSTVTO: " & svojstvo
+    Debug.Print "MPC cijene:"
+    Debug.Print "   A: " & a
+    Debug.Print "   B: " & b
+    Debug.Print "   C: " & c
+    Debug.Print "   D: " & d
+    Debug.Print "   S1: " & s1
+    Debug.Print "   S2: " & s2
+    Debug.Print "   S3: " & s3
+    Debug.Print "   KAMP: " & kamp
     Debug.Print "######"
     
 End Sub
 
 
-Private Function MPC_ROUNDPRICE(val As Double, pricelist As String) As Double
+Private Function MPC_ROUNDPRICE(val As Double, pricelist As String, svojstvo As String) As Double
+    
+    Dim svojstva() As String
+    svojstva = Split(svojstvo, ";")
+    Dim flagBasicRound As Boolean
+    flagBasicRound = False
+    
+    If IsInArray("KOSARICA", svojstva) Or IsInArray("SEZONA", svojstva) Or IsInArray("TOP500", svojstva) Then
+        flagBasicRound = True
+    End If
     
     MPC_ROUNDPRICE = val
     
-    If val >= 15 Then
-        'A,B,C,D,S1,S2,S3,KAMP ROUND UP, zaokruživanje na 0,49 i 0,99
-        If pricelist = "A" Or pricelist = "B" Or pricelist = "C" Or pricelist = "D" Or pricelist = "S1" Or pricelist = "S2" Or pricelist = "S3" Or pricelist = "KAMP" Then
-            MPC_ROUNDPRICE = Application.WorksheetFunction.Ceiling(val, 0.1) - 0.01
+    If pricelist = "A" Then
+        MPC_ROUNDPRICE = val
+        
+    ElseIf flagBasicRound = True Then
+        If val = 0 Then
+            MPC_ROUNDPRICE = 0
+        ElseIf (Application.WorksheetFunction.MRound(val, 0.05) - 0.01) * 100 Mod 10 = 4 Then
+            MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05)
+        Else
+            MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05) - 0.01
+        End If
+    
+    ElseIf val >= 9 Then
+        'zaokruživanje na 0.49 i 0.99, na gornju 0.09
+        'MPC_ROUNDPRICE = Application.WorksheetFunction.Ceiling(val, 0.5) - 0.01
+        
+        Dim modValue As Integer
+        modValue = Application.WorksheetFunction.Floor(val, 0.01) * 100 Mod 100
+        
+        'zaokruživanje na najbliži 0.29, 0.49, 0.69 i 0.99
+        If modValue >= 14 And modValue < 39 Then
+            MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.29
+            
+        ElseIf modValue >= 39 And modValue < 59 Then
+            MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.49
+            
+        ElseIf modValue >= 59 And modValue < 84 Then
+            MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.69
+            
+        ElseIf modValue >= 84 Then
+            MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.99
+            
+        Else 'sluèaj kad je manje od 14, zaokružujemo na .99, ali sa nižom brojkom
+            MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) - 1 + 0.99
+            
         End If
         
-    ElseIf val >= 7 Then
-        'A,B,C,D,S1,S2,S3,KAMP ROUND UP, zaokruživanje na 0,09
-        If pricelist = "A" Or pricelist = "B" Or pricelist = "C" Or pricelist = "D" Or pricelist = "S1" Or pricelist = "S2" Or pricelist = "S3" Or pricelist = "KAMP" Then
-            MPC_ROUNDPRICE = Application.WorksheetFunction.Ceiling(val, 0.1) - 0.01
-        End If
         
     ElseIf val >= 4 Then
-        'A,B ROUND; C,D,S1,S2,S3,KAMP ROUND UP, zaokruživanje na 0,05 i 0,09
-        If pricelist = "A" Or pricelist = "B" Then
-            If (Application.WorksheetFunction.MRound(val, 0.05) - 0.01) * 100 Mod 10 = 4 Then
-                MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05)
-            Else
-                MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05) - 0.01
-            End If
-       ElseIf pricelist = "C" Or pricelist = "D" Or pricelist = "S1" Or pricelist = "S2" Or pricelist = "S3" Or pricelist = "KAMP" Then
-            If (Application.WorksheetFunction.Ceiling(val, 0.05) - 0.01) * 100 Mod 10 = 4 Then
-                MPC_ROUNDPRICE = Application.WorksheetFunction.Ceiling(val, 0.05)
-            Else
-                MPC_ROUNDPRICE = Application.WorksheetFunction.Ceiling(val, 0.05) - 0.01
-            End If
+        'zaokruživanje na 0.29, 0.49, 0.69 i 0.99, na gornju 0.09
+        'If (Application.WorksheetFunction.Floor(val, 0.01) * 100 Mod 100) <= 29 Then
+            'MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.29
+        'ElseIf (Application.WorksheetFunction.Floor(val, 0.01) * 100 Mod 100) <= 49 Then
+            'MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.49
+        'ElseIf (Application.WorksheetFunction.Floor(val, 0.01) * 100 Mod 100) <= 69 Then
+            'MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.69
+        'Else
+            'MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.99
+        'End If
+        
+        'zaokruživanje na 0,05 i 0,09
+        If val = 0 Then
+            MPC_ROUNDPRICE = 0
+        ElseIf (Application.WorksheetFunction.MRound(val, 0.05) - 0.01) * 100 Mod 10 = 4 Then
+            MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05)
+        Else
+            MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05) - 0.01
         End If
         
     ElseIf val >= 2 Then
-        'A,B ROUND; C,D,S1,S2,S3,KAMP ROUND UP, zaokruživanje na 0,05 i 0,09
-        If pricelist = "A" Or pricelist = "B" Then
-            If (Application.WorksheetFunction.MRound(val, 0.05) - 0.01) * 100 Mod 10 = 4 Then
-                MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05)
-            Else
-                MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05) - 0.01
-            End If
-       ElseIf pricelist = "C" Or pricelist = "D" Or pricelist = "S1" Or pricelist = "S2" Or pricelist = "S3" Or pricelist = "KAMP" Then
-            If (Application.WorksheetFunction.Ceiling(val, 0.05) - 0.01) * 100 Mod 10 = 4 Then
-                MPC_ROUNDPRICE = Application.WorksheetFunction.Ceiling(val, 0.05)
-            Else
-                MPC_ROUNDPRICE = Application.WorksheetFunction.Ceiling(val, 0.05) - 0.01
-            End If
+        
+        'zaokruživanje na 0.29, 0.49, 0.69 i 0.99, na gornju 0.09
+        'If (Application.WorksheetFunction.Floor(val, 0.01) * 100 Mod 100) <= 29 Then
+            'MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.29
+        'ElseIf (Application.WorksheetFunction.Floor(val, 0.01) * 100 Mod 100) <= 49 Then
+            'MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.49
+        'ElseIf (Application.WorksheetFunction.Floor(val, 0.01) * 100 Mod 100) <= 69 Then
+            'MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.69
+        'Else
+            'MPC_ROUNDPRICE = Application.WorksheetFunction.Floor(val, 1) + 0.99
+        'End If
+        
+        'zaokruživanje na 0,05 i 0,09
+        If val = 0 Then
+            MPC_ROUNDPRICE = 0
+        ElseIf (Application.WorksheetFunction.MRound(val, 0.05) - 0.01) * 100 Mod 10 = 4 Then
+            MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05)
+        Else
+            MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05) - 0.01
         End If
         
     Else
         'less then 2€
-        'A,B NO ROUND
-        'C ROUND, D,S1,S2,S3,KAMP ROUNDUP, zaokruživanje na 0,05 i 0,09
-        
-        If pricelist = "A" Or pricelist = "B" Then
-            MPC_ROUNDPRICE = Round(val, 2)
-        ElseIf pricelist = "C" Then
-           If (Application.WorksheetFunction.MRound(val, 0.05) - 0.01) * 100 Mod 10 = 4 Then
-                MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05)
-            Else
-                MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05) - 0.01
-            End If
-         ElseIf pricelist = "D" Or pricelist = "S1" Or pricelist = "S2" Or pricelist = "S3" Or pricelist = "KAMP" Then
-            If (Application.WorksheetFunction.Ceiling(val, 0.05) - 0.01) * 100 Mod 10 = 4 Then
-                MPC_ROUNDPRICE = Application.WorksheetFunction.Ceiling(val, 0.05)
-            Else
-                MPC_ROUNDPRICE = Application.WorksheetFunction.Ceiling(val, 0.05) - 0.01
-            End If
+        'zaokruživanje na 0,05 i 0,09
+        If val = 0 Then
+            MPC_ROUNDPRICE = 0
+        ElseIf (Application.WorksheetFunction.MRound(val, 0.05) - 0.01) * 100 Mod 10 = 4 Then
+            MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05)
+        Else
+            MPC_ROUNDPRICE = Application.WorksheetFunction.MRound(val, 0.05) - 0.01
         End If
-       
+         
     End If
     
 End Function
 
-Private Function MPC_PRICE_B(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double) As Double
+
+
+Private Function MPC_PRICE_B(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double, opis As String) As Double
     Dim svojstva() As String
     svojstva = Split(svojstvo, ";")
     
@@ -225,34 +272,34 @@ Private Function MPC_PRICE_B(val As Double, prevVal As Double, svojstvo As Strin
         
     Else
         If val >= 20 Then
-            If val * 1.025 - prevVal <= maxDiff Then
-                MPC_PRICE_B = MPC_ROUNDPRICE(val * 1.025, "B")
+            If val * 1.04 - prevVal <= maxDiff Then
+                MPC_PRICE_B = MPC_ROUNDPRICE(val * 1.04, "B", svojstvo)
             Else
-                MPC_PRICE_B = MPC_ROUNDPRICE(prevVal + maxDiff, "B")
+                MPC_PRICE_B = MPC_ROUNDPRICE(prevVal + maxDiff, "B", svojstvo)
             End If
         ElseIf val >= 7 Then
-            If val * 1.03 - prevVal <= maxDiff Then
-                MPC_PRICE_B = MPC_ROUNDPRICE(val * 1.03, "B")
+            If val * 1.045 - prevVal <= maxDiff Then
+                MPC_PRICE_B = MPC_ROUNDPRICE(val * 1.045, "B", svojstvo)
             Else
-                MPC_PRICE_B = MPC_ROUNDPRICE(prevVal + maxDiff, "B")
+                MPC_PRICE_B = MPC_ROUNDPRICE(prevVal + maxDiff, "B", svojstvo)
             End If
-        ElseIf val >= 4 Then
-            If val * 1.035 - prevVal <= maxDiff Then
-                MPC_PRICE_B = MPC_ROUNDPRICE(val * 1.035, "B")
+        ElseIf val >= 5 Then
+            If val * 1.055 - prevVal <= maxDiff Then
+                MPC_PRICE_B = MPC_ROUNDPRICE(val * 1.055, "B", svojstvo)
             Else
-                MPC_PRICE_B = MPC_ROUNDPRICE(prevVal + maxDiff, "B")
+                MPC_PRICE_B = MPC_ROUNDPRICE(prevVal + maxDiff, "B", svojstvo)
             End If
         ElseIf val >= 2 Then
-            If val * 1.04 - prevVal <= maxDiff Then
-                MPC_PRICE_B = MPC_ROUNDPRICE(val * 1.04, "B")
+            If val * 1.06 - prevVal <= maxDiff Then
+                MPC_PRICE_B = MPC_ROUNDPRICE(val * 1.06, "B", svojstvo)
             Else
-                MPC_PRICE_B = MPC_ROUNDPRICE(prevVal + maxDiff, "B")
+                MPC_PRICE_B = MPC_ROUNDPRICE(prevVal + maxDiff, "B", svojstvo)
             End If
         Else 'less then 2€
-            If val * 1.05 - val <= maxDiff Then
-                MPC_PRICE_B = MPC_ROUNDPRICE(val * 1.05, "B")
+            If val * 1.075 - val <= maxDiff Then
+                MPC_PRICE_B = MPC_ROUNDPRICE(val * 1.075, "B", svojstvo)
             Else
-                MPC_PRICE_B = MPC_ROUNDPRICE(prevVal + maxDiff, "B")
+                MPC_PRICE_B = MPC_ROUNDPRICE(prevVal + maxDiff, "B", svojstvo)
             End If
         End If
         
@@ -261,13 +308,14 @@ Private Function MPC_PRICE_B(val As Double, prevVal As Double, svojstvo As Strin
 End Function
 
 
-Private Function MPC_PRICE_C(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double) As Double
+
+Private Function MPC_PRICE_C(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double, opis As String) As Double
     'val - nova osnovna cijena za izraèun
     'prevVal - cijena prethodnog cjenika za usporedbu
     
     Dim svojstva() As String
     svojstva = Split(svojstvo, ";")
-    
+
     Dim top500_cijene() As Variant
     top500_cijene() = Array(0.6, 0.5, 0.46, 0.41, 0.4, 0.36, 0.31, 0.3, 0.26, 0.2, 0.16, 0.12, 0.11, 0.1, 0.02, 0.01, 0.06, 0.07, 0.21, 0.7, 0.8)
     Dim woSvojstvo_cijene() As Variant
@@ -281,7 +329,6 @@ Private Function MPC_PRICE_C(val As Double, prevVal As Double, svojstvo As Strin
         MPC_PRICE_C = val
 
     ElseIf IsInArray("KOSARICA", svojstva) Then
-        
         MPC_PRICE_C = val
         
     ElseIf IsInArray("TOP500", svojstva) Then
@@ -289,56 +336,56 @@ Private Function MPC_PRICE_C(val As Double, prevVal As Double, svojstvo As Strin
         If IsInArray(val, top500_cijene) Then
             MPC_PRICE_C = prevVal
         ElseIf val * 1.03 - prevVal <= maxDiff Then
-            MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.03, "C")
+            MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.03, "C", svojstvo)
         Else
-            MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C")
+            MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C", svojstvo)
         End If
         
     Else
         If val >= 20 Then
-            If val * 1.05 - prevVal <= maxDiff Then
-                MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.05, "C")
+            If val * 1.06 - prevVal <= maxDiff Then
+                MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.06, "C", svojstvo)
             Else
-                MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C")
+                MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C", svojstvo)
             End If
         ElseIf val >= 7 Then
-            If val * 1.06 - prevVal <= maxDiff Then
-                MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.06, "C")
+            If val * 1.075 - prevVal <= maxDiff Then
+                MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.075, "C", svojstvo)
             Else
-                MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C")
+                MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C", svojstvo)
             End If
-        ElseIf val >= 4 Then
-            If val * 1.07 - prevVal <= maxDiff Then
-                MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.07, "C")
+        ElseIf val >= 5 Then
+            If val * 1.085 - prevVal <= maxDiff Then
+                MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.085, "C", svojstvo)
             Else
-                MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C")
+                MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C", svojstvo)
             End If
         ElseIf val >= 2 Then
-            If val * 1.08 - prevVal <= maxDiff Then
-                MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.08, "C")
+            If val * 1.1 - prevVal <= maxDiff Then
+                MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.1, "C", svojstvo)
             Else
-                MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C")
+                MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C", svojstvo)
             End If
         Else 'less then 2€
             If IsInArray(val, woSvojstvo_cijene) Then
                 MPC_PRICE_C = prevVal
-            ElseIf val * 1.1 - prevVal <= maxDiff Then
-                MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.1, "C")
+            ElseIf val * 1.125 - prevVal <= maxDiff Then
+                MPC_PRICE_C = MPC_ROUNDPRICE(val * 1.125, "C", svojstvo)
             Else
-                MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C")
+                MPC_PRICE_C = MPC_ROUNDPRICE(prevVal + maxDiff, "C", svojstvo)
             End If
         End If
         
     End If
 End Function
 
-Private Function MPC_PRICE_D(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double) As Double
+Private Function MPC_PRICE_D(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double, opis As String) As Double
     'val - nova osnovna cijena za izraèun
     'prevVal - cijena prethodnog cjenika za usporedbu
     
     Dim svojstva() As String
     svojstva = Split(svojstvo, ";")
-    
+
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_D = val
     
@@ -354,33 +401,33 @@ Private Function MPC_PRICE_D(val As Double, prevVal As Double, svojstvo As Strin
     Else
         If val >= 20 Then
             If val * 1.075 - prevVal <= maxDiff Then
-                MPC_PRICE_D = MPC_ROUNDPRICE(val * 1.075, "D")
+                MPC_PRICE_D = MPC_ROUNDPRICE(val * 1.075, "D", svojstvo)
             Else
-                MPC_PRICE_D = MPC_ROUNDPRICE(prevVal + maxDiff, "D")
+                MPC_PRICE_D = MPC_ROUNDPRICE(prevVal + maxDiff, "D", svojstvo)
             End If
         ElseIf val >= 7 Then
             If val * 1.09 - prevVal <= maxDiff Then
-                MPC_PRICE_D = MPC_ROUNDPRICE(val * 1.09, "D")
+                MPC_PRICE_D = MPC_ROUNDPRICE(val * 1.09, "D", svojstvo)
             Else
-                MPC_PRICE_D = MPC_ROUNDPRICE(prevVal + maxDiff, "D")
+                MPC_PRICE_D = MPC_ROUNDPRICE(prevVal + maxDiff, "D", svojstvo)
             End If
-        ElseIf val >= 4 Then
+        ElseIf val >= 5 Then
             If val * 1.1 - prevVal <= maxDiff Then
-                MPC_PRICE_D = MPC_ROUNDPRICE(val * 1.1, "D")
+                MPC_PRICE_D = MPC_ROUNDPRICE(val * 1.1, "D", svojstvo)
             Else
-                MPC_PRICE_D = MPC_ROUNDPRICE(prevVal + maxDiff, "D")
+                MPC_PRICE_D = MPC_ROUNDPRICE(prevVal + maxDiff, "D", svojstvo)
             End If
         ElseIf val >= 2 Then
             If val * 1.12 - prevVal <= maxDiff Then
-                MPC_PRICE_D = MPC_ROUNDPRICE(val * 1.12, "D")
+                MPC_PRICE_D = MPC_ROUNDPRICE(val * 1.12, "D", svojstvo)
             Else
-                MPC_PRICE_D = MPC_ROUNDPRICE(prevVal + maxDiff, "D")
+                MPC_PRICE_D = MPC_ROUNDPRICE(prevVal + maxDiff, "D", svojstvo)
             End If
         Else 'less then 2€
             If val * 1.15 - prevVal <= maxDiff Then
-                MPC_PRICE_D = MPC_ROUNDPRICE(val * 1.15, "D")
+                MPC_PRICE_D = MPC_ROUNDPRICE(val * 1.15, "D", svojstvo)
             Else
-                MPC_PRICE_D = MPC_ROUNDPRICE(prevVal + maxDiff, "D")
+                MPC_PRICE_D = MPC_ROUNDPRICE(prevVal + maxDiff, "D", svojstvo)
             End If
         End If
         
@@ -388,69 +435,77 @@ Private Function MPC_PRICE_D(val As Double, prevVal As Double, svojstvo As Strin
 End Function
 
 
-Private Function MPC_PRICE_S1(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double) As Double
+Private Function MPC_PRICE_S1(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double, opis As String) As Double
     'val - nova osnovna cijena za izraèun
     'prevVal - cijena prethodnog cjenika za usporedbu
     
     Dim svojstva() As String
     svojstva = Split(svojstvo, ";")
+    
     
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_S1 = val
         
     ElseIf IsInArray("KOSARICA", svojstva) And IsInArray("SEZONA", svojstva) Then
         MPC_PRICE_S1 = val
+        flagBasicRound = True
     
     'iskljuèena pravila prema tasku 1717
     'KOŠARICA i TOP500 se trebaju diferencirati u S1 cjeniku
     'ElseIf IsInArray("KOSARICA", svojstva) Then
         'MPC_PRICE_S1 = val
         
-    'ElseIf IsInArray("TOP500", svojstva) Then
-        'MPC_PRICE_S1 = prevVal
+    ElseIf IsInArray("TOP500", svojstva) Then
+        If val * 1.05 - prevVal <= maxDiff Then
+            MPC_PRICE_S1 = MPC_ROUNDPRICE(val * 1.05, "S1", svojstvo)
+        Else
+            MPC_PRICE_S1 = MPC_ROUNDPRICE(prevVal + maxDiff, "S1", svojstvo)
+        End If
         
     Else
         If val >= 20 Then
             If val * 1.095 - prevVal <= maxDiff Then
-                MPC_PRICE_S1 = MPC_ROUNDPRICE(val * 1.095, "S1")
+                MPC_PRICE_S1 = MPC_ROUNDPRICE(val * 1.095, "S1", svojstvo)
             Else
-                MPC_PRICE_S1 = MPC_ROUNDPRICE(prevVal + maxDiff, "S1")
+                MPC_PRICE_S1 = MPC_ROUNDPRICE(prevVal + maxDiff, "S1", svojstvo)
             End If
         ElseIf val >= 7 Then
             If val * 1.11 - prevVal <= maxDiff Then
-                MPC_PRICE_S1 = MPC_ROUNDPRICE(val * 1.11, "S1")
+                MPC_PRICE_S1 = MPC_ROUNDPRICE(val * 1.11, "S1", svojstvo)
             Else
-                MPC_PRICE_S1 = MPC_ROUNDPRICE(prevVal + maxDiff, "S1")
+                MPC_PRICE_S1 = MPC_ROUNDPRICE(prevVal + maxDiff, "S1", svojstvo)
             End If
-        ElseIf val >= 4 Then
+        ElseIf val >= 5 Then
             If val * 1.12 - prevVal <= maxDiff Then
-                MPC_PRICE_S1 = MPC_ROUNDPRICE(val * 1.12, "S1")
+                MPC_PRICE_S1 = MPC_ROUNDPRICE(val * 1.12, "S1", svojstvo)
             Else
-                MPC_PRICE_S1 = MPC_ROUNDPRICE(prevVal + maxDiff, "S1")
+                MPC_PRICE_S1 = MPC_ROUNDPRICE(prevVal + maxDiff, "S1", svojstvo)
             End If
         ElseIf val >= 2 Then
             If val * 1.14 - prevVal <= maxDiff Then
-                MPC_PRICE_S1 = MPC_ROUNDPRICE(val * 1.14, "S1")
+                MPC_PRICE_S1 = MPC_ROUNDPRICE(val * 1.14, "S1", svojstvo)
             Else
-                MPC_PRICE_S1 = MPC_ROUNDPRICE(prevVal + maxDiff, "S1")
+                MPC_PRICE_S1 = MPC_ROUNDPRICE(prevVal + maxDiff, "S1", svojstvo)
             End If
         Else 'less then 2€
             If val * 1.17 - prevVal <= maxDiff Then
-                MPC_PRICE_S1 = MPC_ROUNDPRICE(val * 1.17, "S1")
+                MPC_PRICE_S1 = MPC_ROUNDPRICE(val * 1.17, "S1", svojstvo)
             Else
-                MPC_PRICE_S1 = MPC_ROUNDPRICE(prevVal + maxDiff, "S1")
+                MPC_PRICE_S1 = MPC_ROUNDPRICE(prevVal + maxDiff, "S1", svojstvo)
             End If
         End If
         
     End If
 End Function
 
-Private Function MPC_PRICE_S2(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double) As Double
+Private Function MPC_PRICE_S2(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double, opis As String) As Double
     'val - nova osnovna cijena za izraèun
     'prevVal - cijena prethodnog cjenika za usporedbu
     
     Dim svojstva() As String
     svojstva = Split(svojstvo, ";")
+    
+
     
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_S2 = val
@@ -463,103 +518,113 @@ Private Function MPC_PRICE_S2(val As Double, prevVal As Double, svojstvo As Stri
     'ElseIf IsInArray("KOSARICA", svojstva) Then
         'MPC_PRICE_S2 = val
         
-    'ElseIf IsInArray("TOP500", svojstva) Then
-        'MPC_PRICE_S2 = prevVal
+    ElseIf IsInArray("TOP500", svojstva) Then
+        If val * 1.05 - prevVal <= maxDiff Then
+            MPC_PRICE_S2 = MPC_ROUNDPRICE(val * 1.05, "S2", svojstvo)
+        Else
+            MPC_PRICE_S2 = MPC_ROUNDPRICE(prevVal + maxDiff, "S2", svojstvo)
+        End If
         
     Else
         If val >= 20 Then
             If val * 1.11 - prevVal <= maxDiff Then
-                MPC_PRICE_S2 = MPC_ROUNDPRICE(val * 1.11, "S2")
+                MPC_PRICE_S2 = MPC_ROUNDPRICE(val * 1.11, "S2", svojstvo)
             Else
-                MPC_PRICE_S2 = MPC_ROUNDPRICE(prevVal + maxDiff, "S2")
+                MPC_PRICE_S2 = MPC_ROUNDPRICE(prevVal + maxDiff, "S2", svojstvo)
             End If
         ElseIf val >= 7 Then
             If val * 1.125 - prevVal <= maxDiff Then
-                MPC_PRICE_S2 = MPC_ROUNDPRICE(val * 1.125, "S2")
+                MPC_PRICE_S2 = MPC_ROUNDPRICE(val * 1.125, "S2", svojstvo)
             Else
-                MPC_PRICE_S2 = MPC_ROUNDPRICE(prevVal + maxDiff, "S2")
+                MPC_PRICE_S2 = MPC_ROUNDPRICE(prevVal + maxDiff, "S2", svojstvo)
             End If
-        ElseIf val >= 4 Then
+        ElseIf val >= 5 Then
             If val * 1.14 - prevVal <= maxDiff Then
-                MPC_PRICE_S2 = MPC_ROUNDPRICE(val * 1.14, "S2")
+                MPC_PRICE_S2 = MPC_ROUNDPRICE(val * 1.14, "S2", svojstvo)
             Else
-                MPC_PRICE_S2 = MPC_ROUNDPRICE(prevVal + maxDiff, "S2")
+                MPC_PRICE_S2 = MPC_ROUNDPRICE(prevVal + maxDiff, "S2", svojstvo)
             End If
         ElseIf val >= 2 Then
             If val * 1.16 - prevVal <= maxDiff Then
-                MPC_PRICE_S2 = MPC_ROUNDPRICE(val * 1.16, "S2")
+                MPC_PRICE_S2 = MPC_ROUNDPRICE(val * 1.16, "S2", svojstvo)
             Else
-                MPC_PRICE_S2 = MPC_ROUNDPRICE(prevVal + maxDiff, "S2")
+                MPC_PRICE_S2 = MPC_ROUNDPRICE(prevVal + maxDiff, "S2", svojstvo)
             End If
         Else 'less then 2€
             If val * 1.19 - prevVal <= maxDiff Then
-                MPC_PRICE_S2 = MPC_ROUNDPRICE(val * 1.19, "S2")
+                MPC_PRICE_S2 = MPC_ROUNDPRICE(val * 1.19, "S2", svojstvo)
             Else
-                MPC_PRICE_S2 = MPC_ROUNDPRICE(prevVal + maxDiff, "S2")
+                MPC_PRICE_S2 = MPC_ROUNDPRICE(prevVal + maxDiff, "S2", svojstvo)
             End If
         End If
         
     End If
 End Function
 
-Private Function MPC_PRICE_S3(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double) As Double
+Private Function MPC_PRICE_S3(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double, opis As String) As Double
     'val - nova osnovna cijena za izraèun
     'prevVal - cijena prethodnog cjenika za usporedbu
     
     Dim svojstva() As String
     svojstva = Split(svojstvo, ";")
     
+
+    
     If IsInArray("IMPULS", svojstva) And IsInArray("SLADOLED", svojstva) Then
         MPC_PRICE_S3 = val
         
     ElseIf IsInArray("KOSARICA", svojstva) And IsInArray("SEZONA", svojstva) Then
         MPC_PRICE_S3 = val
-        
+      
     'iskljuèena pravila prema tasku 1717
     'KOŠARICA i TOP500 se trebaju diferencirati u S3 cjeniku
     'ElseIf IsInArray("KOSARICA", svojstva) Then
         'MPC_PRICE_S3 = val
         
-    'ElseIf IsInArray("TOP500", svojstva) Then
-        'MPC_PRICE_S3 = prevVal
+    ElseIf IsInArray("TOP500", svojstva) Then
+        If val * 1.05 - prevVal <= maxDiff Then
+            MPC_PRICE_S3 = MPC_ROUNDPRICE(val * 1.05, "S3", svojstvo)
+        Else
+            MPC_PRICE_S3 = MPC_ROUNDPRICE(prevVal + maxDiff, "S3", svojstvo)
+        End If
         
     Else
         If val >= 20 Then
             If val * 1.125 - prevVal <= maxDiff Then
-                MPC_PRICE_S3 = MPC_ROUNDPRICE(val * 1.125, "S3")
+                MPC_PRICE_S3 = MPC_ROUNDPRICE(val * 1.125, "S3", svojstvo)
             Else
-                MPC_PRICE_S3 = MPC_ROUNDPRICE(prevVal + maxDiff, "S3")
+                MPC_PRICE_S3 = MPC_ROUNDPRICE(prevVal + maxDiff, "S3", svojstvo)
             End If
         ElseIf val >= 7 Then
             If val * 1.14 - prevVal <= maxDiff Then
-                MPC_PRICE_S3 = MPC_ROUNDPRICE(val * 1.14, "S3")
+                MPC_PRICE_S3 = MPC_ROUNDPRICE(val * 1.14, "S3", svojstvo)
             Else
-                MPC_PRICE_S3 = MPC_ROUNDPRICE(prevVal + maxDiff, "S3")
+                MPC_PRICE_S3 = MPC_ROUNDPRICE(prevVal + maxDiff, "S3", svojstvo)
             End If
-        ElseIf val >= 4 Then
+        ElseIf val >= 5 Then
             If val * 1.16 - prevVal <= maxDiff Then
-                MPC_PRICE_S3 = MPC_ROUNDPRICE(val * 1.16, "S3")
+                MPC_PRICE_S3 = MPC_ROUNDPRICE(val * 1.16, "S3", svojstvo)
             Else
-                MPC_PRICE_S3 = MPC_ROUNDPRICE(prevVal + maxDiff, "S3")
+                MPC_PRICE_S3 = MPC_ROUNDPRICE(prevVal + maxDiff, "S3", svojstvo)
             End If
         ElseIf val >= 2 Then
             If val * 1.18 - prevVal <= maxDiff Then
-                MPC_PRICE_S3 = MPC_ROUNDPRICE(val * 1.18, "S3")
+                MPC_PRICE_S3 = MPC_ROUNDPRICE(val * 1.18, "S3", svojstvo)
             Else
-                MPC_PRICE_S3 = MPC_ROUNDPRICE(prevVal + maxDiff, "S3")
+                MPC_PRICE_S3 = MPC_ROUNDPRICE(prevVal + maxDiff, "S3", svojstvo)
             End If
         Else 'less then 2€
             If val * 1.21 - prevVal <= maxDiff Then
-                MPC_PRICE_S3 = MPC_ROUNDPRICE(val * 1.21, "S3")
+                MPC_PRICE_S3 = MPC_ROUNDPRICE(val * 1.21, "S3", svojstvo)
             Else
-                MPC_PRICE_S3 = MPC_ROUNDPRICE(prevVal + maxDiff, "S3")
+                MPC_PRICE_S3 = MPC_ROUNDPRICE(prevVal + maxDiff, "S3", svojstvo)
             End If
         End If
         
     End If
 End Function
 
-Private Function MPC_PRICE_KAMP(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double) As Double
+Private Function MPC_PRICE_KAMP(val As Double, prevVal As Double, svojstvo As String, maxDiff As Double, opis As String) As Double
     'val - nova osnovna cijena za izraèun
     'prevVal - cijena prethodnog cjenika za usporedbu
     
@@ -577,39 +642,43 @@ Private Function MPC_PRICE_KAMP(val As Double, prevVal As Double, svojstvo As St
     'ElseIf IsInArray("KOSARICA", svojstva) Then
         'MPC_PRICE_KAMP = val
         
-    'ElseIf IsInArray("TOP500", svojstva) Then
-        'MPC_PRICE_KAMP = prevVal
+    ElseIf IsInArray("TOP500", svojstva) Then
+        If val * 1.05 - prevVal <= maxDiff Then
+            MPC_PRICE_KAMP = MPC_ROUNDPRICE(val * 1.05, "KAMP", svojstvo)
+        Else
+            MPC_PRICE_KAMP = MPC_ROUNDPRICE(prevVal + maxDiff, "KAMP", svojstvo)
+        End If
         
     Else
         If val >= 20 Then
             If val * 1.145 - prevVal <= maxDiff Then
-                MPC_PRICE_KAMP = MPC_ROUNDPRICE(val * 1.145, "KAMP")
+                MPC_PRICE_KAMP = MPC_ROUNDPRICE(val * 1.145, "KAMP", svojstvo)
             Else
-                MPC_PRICE_KAMP = MPC_ROUNDPRICE(prevVal + maxDiff, "KAMP")
+                MPC_PRICE_KAMP = MPC_ROUNDPRICE(prevVal + maxDiff, "KAMP", svojstvo)
             End If
         ElseIf val >= 7 Then
             If val * 1.16 - prevVal <= maxDiff Then
-                MPC_PRICE_KAMP = MPC_ROUNDPRICE(val * 1.16, "KAMP")
+                MPC_PRICE_KAMP = MPC_ROUNDPRICE(val * 1.16, "KAMP", svojstvo)
             Else
-                MPC_PRICE_KAMP = MPC_ROUNDPRICE(prevVal + maxDiff, "KAMP")
+                MPC_PRICE_KAMP = MPC_ROUNDPRICE(prevVal + maxDiff, "KAMP", svojstvo)
             End If
-        ElseIf val >= 4 Then
+        ElseIf val >= 5 Then
             If val * 1.18 - prevVal <= maxDiff Then
-                MPC_PRICE_KAMP = MPC_ROUNDPRICE(val * 1.18, "KAMP")
+                MPC_PRICE_KAMP = MPC_ROUNDPRICE(val * 1.18, "KAMP", svojstvo)
             Else
-                MPC_PRICE_KAMP = MPC_ROUNDPRICE(prevVal + maxDiff, "KAMP")
+                MPC_PRICE_KAMP = MPC_ROUNDPRICE(prevVal + maxDiff, "KAMP", svojstvo)
             End If
         ElseIf val >= 2 Then
             If val * 1.2 - prevVal <= maxDiff Then
-                MPC_PRICE_KAMP = MPC_ROUNDPRICE(val * 1.2, "KAMP")
+                MPC_PRICE_KAMP = MPC_ROUNDPRICE(val * 1.2, "KAMP", svojstvo)
             Else
-                MPC_PRICE_KAMP = MPC_ROUNDPRICE(prevVal + maxDiff, "KAMP")
+                MPC_PRICE_KAMP = MPC_ROUNDPRICE(prevVal + maxDiff, "KAMP", svojstvo)
             End If
         Else 'less then 2€
             If val * 1.23 - prevVal <= maxDiff Then
-                MPC_PRICE_KAMP = MPC_ROUNDPRICE(val * 1.23, "KAMP")
+                MPC_PRICE_KAMP = MPC_ROUNDPRICE(val * 1.23, "KAMP", svojstvo)
             Else
-                MPC_PRICE_KAMP = MPC_ROUNDPRICE(prevVal + maxDiff, "KAMP")
+                MPC_PRICE_KAMP = MPC_ROUNDPRICE(prevVal + maxDiff, "KAMP", svojstvo)
             End If
         End If
         
