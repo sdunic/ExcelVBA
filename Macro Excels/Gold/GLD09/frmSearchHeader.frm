@@ -4,7 +4,7 @@ Begin {C62A69F0-16DC-11CE-9E98-00AA00574A4F} frmSearchHeader
    ClientHeight    =   3660
    ClientLeft      =   225
    ClientTop       =   810
-   ClientWidth     =   11595
+   ClientWidth     =   15015
    OleObjectBlob   =   "frmSearchHeader.frx":0000
    StartUpPosition =   1  'CenterOwner
 End
@@ -127,7 +127,7 @@ Private Sub btnSearchCustomers_Click()
     , CStr(sqlstr)
     
     Do Until rs.EOF = True
-        lstCustomerResults.AddItem rs(0) & " | " & rs(1)
+        lstCustomerResults.AddItem rs(0) & " | " & rs(1) & " | " & rs(2) & " | " & rs(3)
         rs.MoveNext
     Loop
     

@@ -150,7 +150,7 @@ Sub insertInvoice()
             CStr(Split(Range(cfg.get_artikl & i).Value, " | ")(0)), CStr(Range(cfg.get_analitickiArtikl & i).Value), CStr(Range(cfg.get_robniCvor & i).Value), _
             CStr(Range(cfg.get_tm & i).Value), CStr(Split(Range(cfg.get_reasonCodeTekst & cfg.get_reasonCodeRedak).Value, " | ")(0)), CStr(Range(cfg.get_korisnik & redakZaglavlja).Value), CStr(Range(cfg.get_napomena & redakZaglavlja).Value), _
             Range(cfg.get_kolicina & i).Value, Range(cfg.get_ukupniIznos & i).Value, CStr(Split(Range(cfg.get_lv_lu & i).Value, " | ")(0)), _
-            CStr(Range(cfg.get_analitickiTM & i).Value), CStr(Range(cfg.get_analitickiMrezniCvor & i).Value), CStr(fyp))
+            CStr(Range(cfg.get_analitickiTM & i).Value), CStr(Range(cfg.get_analitickiMrezniCvor & i).Value), CStr(fyp), CStr(Split(Range(cfg.get_kupac & redakZaglavlja).Value, " | ")(2)))
             
              If i = LastRow - 1 Then
                 SQLinsertInvoice = SQLinsertInvoice & queries.insertASISTATUS(CStr(msgid))

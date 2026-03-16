@@ -50,8 +50,8 @@ Function searchLocations(code As String, name As String) As String
 End Function
 
 Function searchCustomers(code As String, name As String) As String
-    searchCustomers = "EXEC ('SELECT clincli, TRIM(clilibl) " _
-            & "FROM clidgene WHERE clityma = 1 "
+    searchCustomers = "EXEC ('SELECT clincli, TRIM(clilibl), adradre, adrrais " _
+            & "FROM clidgene, cliadres WHERE clityma = 1 and clincli = adrncli"
             
     If Len(code) > 0 Then
         searchCustomers = searchCustomers & " AND clincli like ''" & UCase(code) & "'' "
@@ -61,7 +61,7 @@ Function searchCustomers(code As String, name As String) As String
         searchCustomers = searchCustomers & " AND clilibl like ''" & UCase(name) & "'' "
     End If
           
-    searchCustomers = searchCustomers & " ORDER BY 2')"
+    searchCustomers = searchCustomers & " ORDER BY 3')"
     searchCustomers = searchCustomers & "at [" + db.getOracleServer + "];"
 End Function
 
@@ -146,11 +146,11 @@ End Function
 
 Function insertSIS15(msgid As String, nlig As String, site As String, tipFakture As String, kupac As String, ugovor As String, _
 datumFakture As String, cexr As String, cexrAnaliza As String, msAnaliza As String, tm_pc As String, reasonCode As String, korisnik As String, _
-napomena As String, kolicinaStavke As Double, iznosStavke As Double, lv As String, aSite As String, aNW As String, TCVFYP As String) As String
+napomena As String, kolicinaStavke As Double, iznosStavke As Double, lv As String, aSite As String, aNW As String, TCVFYP As String, TCVFILC As String) As String
 
     insertSIS15 = "EXEC ('"
     insertSIS15 = insertSIS15 & "INSERT INTO sis15_core_inv (TCVMSGID, TCVLNLIG, TCVSITE, TCVSUM, TCVNCLI, TCVCNUM, TCVDATEF, TCVCEXR, TCVLV, TCVLU, "
-    insertSIS15 = insertSIS15 & "TCVPU, TCVMONT, TCVTM, TCVMOTF, TCVMS, TCVCEXRA, TCVNOTE, TCVUSER, TCVSTRT, TCVSDTRT, TCVGTRT, TCVGDTRT, TCVDCRE, TCVDMAJ, TCVTIL, TCVASITE, TCVANW, TCVFYP)"
+    insertSIS15 = insertSIS15 & "TCVPU, TCVMONT, TCVTM, TCVMOTF, TCVMS, TCVCEXRA, TCVNOTE, TCVUSER, TCVSTRT, TCVSDTRT, TCVGTRT, TCVGDTRT, TCVDCRE, TCVDMAJ, TCVTIL, TCVASITE, TCVANW, TCVFYP, TCVFILC)"
     insertSIS15 = insertSIS15 & " VALUES ("
     
     insertSIS15 = insertSIS15 & msgid & ", " 'TCVMSGID NUMBER(9,0)
@@ -203,8 +203,8 @@ napomena As String, kolicinaStavke As Double, iznosStavke As Double, lv As Strin
     If Len(TCVFYP) = 0 Then
         TCVFYP = "NULL"
     End If
-    insertSIS15 = insertSIS15 & TCVFYP 'TCVFYP  - 2 oznaka storno
-    
+    insertSIS15 = insertSIS15 & TCVFYP & ", " 'TCVFYP  - 2 oznaka storno
+    insertSIS15 = insertSIS15 & TCVFILC 'TCVFILC - adresni lanac dodano 03.03.2026. Stefan Duniæ
     insertSIS15 = insertSIS15 & " )"
     insertSIS15 = insertSIS15 & "') at [" + db.getOracleServer + "];"
 
@@ -215,10 +215,10 @@ Function getStornoData(brojFakture As String, datumFakture As Date) As String
 
     getStornoData = "EXEC ('"
     getStornoData = getStornoData + "select "
-    getStornoData = getStornoData + "   (SELECT DECODE(tcvmotf, 901, ''901 | CORE FAKTURA'', 902, ''902 | NON CORE FAKTURA'', null) FROM SIS15_CORE_INV WHERE TCVMSGID = TVCMSGID and TCVLNLIG = 1) FAC_MOTF, "
+    getStornoData = getStornoData + "   (SELECT DECODE(tcvmotf, 901, ''901 | CORE FAKTURA'', 902, ''902 | NON CORE FAKTURA'', tcvmotf, 903, ''903 | NON CORE FAKTURA-Kamate'', 904, ''904 | NON CORE FAKTURA-Faktoring'', 905, ''905 | NON CORE FAKTURA-Predujam'', null) FROM SIS15_CORE_INV WHERE TCVMSGID = TVCMSGID and TCVLNLIG = 1) FAC_MOTF, "
     getStornoData = getStornoData + "   TVCSITE || '' | '' || (select max(soclmag) from sitdgene where socsite = TVCSITE) FAC_SITE, "
     getStornoData = getStornoData + "   (SELECT tcvsum FROM SIS15_CORE_INV WHERE TCVMSGID = TVCMSGID and TCVLNLIG = 1) FAC_SUM,  "
-    getStornoData = getStornoData + "   (SELECT tcvncli || '' | '' || (select clilibl from clidgene where clincli = tcvncli) FROM SIS15_CORE_INV WHERE TCVMSGID = TVCMSGID and TCVLNLIG = 1) FAC_NCLI, "
+    getStornoData = getStornoData + "   (SELECT tcvncli || '' | '' || (select clilibl from clidgene where clincli = tcvncli) || '' | '' || nvl(tcvfilc, 1) || '' | '' || (SELECT adrrais FROM cliadres WHERE adrncli = tcvncli AND adradre = nvl(tcvfilc, 1)) FROM SIS15_CORE_INV WHERE TCVMSGID = TVCMSGID and TCVLNLIG = 1) FAC_NCLI, "
     getStornoData = getStornoData + "   (SELECT tcvcnum || '' | '' || (select clilibl from clidgene where clincli = tcvncli) FROM SIS15_CORE_INV WHERE TCVMSGID = TVCMSGID and TCVLNLIG = 1) FAC_CNUM, "
     getStornoData = getStornoData + "   to_date(current_date) FAC_DATF, "
     getStornoData = getStornoData + "   (select arvcexr || '' | '' || pkartcoca.get_closestean(123, arvcinv) || '' | '' || pkstrucobj.get_desc(123, arvcinr, ''HR'') || '' | '' || arvcexv from artuv where arvcinv = TVCCINL) FAC_ARTICLE,  "
